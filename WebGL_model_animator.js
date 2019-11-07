@@ -283,6 +283,8 @@ var colors = [
 		 0.50,  0.35,  0.35,			 			 
 ];
 
+var models = [];
+
 //----------------------------------------------------------------------------
 //
 // The WebGL code
@@ -672,6 +674,12 @@ function setEventListeners(){
 	});      
 
 	// Button events
+	document.getElementById("cube-button").onclick = function(){
+		
+		cube = new Cube();
+		models.push(cube);
+	};
+
 	
 
 	document.getElementById("XX-on-off-button").onclick = function(){

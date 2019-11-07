@@ -1,7 +1,7 @@
 class Model {
 
-    constructor(primitiveType) {
-        this.primitiveType = primitiveType;
+    constructor() {
+        this.primitiveType = 0;
         //this.mvMatrix; // TODO = ?
         this.translation = {x: 0, y: 0, z: 0};
         this.rotation = {x: 0, y: 0, z: 0, dir: 0};
@@ -49,4 +49,13 @@ class Model {
   class Cube extends Model {
       //TODO 
       // is it even necessary?
+      // just construct a model with a predefined vertex array
+      constructor(){
+          super();
+          super.vertices = getVertices();
+      }
+
+      getVertices(){
+          //vertices = openFile...
+      } 
   }

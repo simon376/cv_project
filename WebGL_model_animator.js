@@ -440,7 +440,9 @@ function drawScene() {
 	mvMatrix = translationMatrix( 0, 0, globalTz );
 	
 	// Instantianting the current model
-		
+	
+	// TODO: Create different Models and draw each of them separatly
+
 	drawModel( angleXX, angleYY, angleZZ, 
 	           sx, sy, sz,
 	           tx, ty, tz,
@@ -573,7 +575,12 @@ function setEventListeners(){
 			}
 					
 			// Assigning to the current model
+			// TODO: append instead of replace
 			
+			// vertices.push(newVertices);
+			// colors.push(newColors);
+			// vertices.concat(newVertices.slice());
+			// colors.concat(newColors.slice());
 			vertices = newVertices.slice();
 			
 			colors = newColors.slice();

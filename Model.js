@@ -74,9 +74,9 @@ class Model {
         this.scale.x = this.scale.y = this.scale.z = factor;
     }
     
-    // TODO ? vorerst nicht verwendet
+    // TODO ? not used right now
     get matrix(){
-        // Reihenfolge ?? woher hab ich das? ist das richtig?...
+        // order? where did i get this? is this right?...
         var mvMatrix = mult(rotationZZMatrix(this.rotation.ZZ.angle), 
                         scalingMatrix(this.scale.x, this.scale.y, this.scale.z));
         mvMatrix = mult(rotationYYMatrix(this.rotation.YY.angle), mvMatrix);
@@ -92,9 +92,6 @@ class Model {
   }
   
   class Cube extends Model {
-      //TODO 
-      // is it even necessary?
-      // just construct a model with a predefined vertex array
       constructor(){
           super();
           super.vertices = [

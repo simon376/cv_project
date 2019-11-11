@@ -533,77 +533,7 @@ function setEventListeners(){
 	
 	// http://stackoverflow.com/questions/23331546/how-to-use-javascript-to-read-local-text-file-and-read-line-by-line
 	
-	document.getElementById("file").onchange = function(){
-		
-		var file = this.files[0];
-		
-		var reader = new FileReader();
-		
-		reader.onload = function( progressEvent ){
-			
-			// Entire file read as a string
-			
-			// The tokens/values in the file
-    
-			// Separation between values is 1 or mode whitespaces
-    
-			var tokens = this.result.split(/\s\s*/);
-    
-			// Array of values; each value is a string
-			
-			var numVertices = parseInt( tokens[0] );
-			
-			// For every vertex we have 6 floating point values
-			
-			var i, j;
-			
-			var aux = 1;
-			
-			var newVertices = [];
-			
-			var newColors = []
-			
-			for( i = 0; i < numVertices; i++ ) {
-			
-				for( j = 0; j < 3; j++ ) {
-					
-					newVertices[ 3 * i + j ] = parseFloat( tokens[ aux++ ] );
-				}
-				
-				for( j = 0; j < 3; j++ ) {
-					
-					newColors[ 3 * i + j ] = parseFloat( tokens[ aux++ ] );
-				}
-			}
-					
-			// Assigning to the current model
-			// TODO: append instead of replace
-			
-			// vertices.push(newVertices);
-			// colors.push(newColors);
-			// vertices.concat(newVertices.slice());
-			// colors.concat(newColors.slice());
-			vertices = newVertices.slice();
-			
-			colors = newColors.slice();
-			
-			// Rendering the model just read
-		
-			initBuffers();
-
-			// RESET the transformations - NEED AUXILIARY FUNCTION !!
-			
-			tx = ty = tz = 0.0;
-						
-			angleXX = angleYY = angleZZ = 0.0;
-			
-			sx = sy = sz = 0.5;
-		};
-		
-		// Entire file read as a string
-			
-		reader.readAsText( file );		
-	}
+	// document.getElementById("file").onchange = readFile;
 
     // Dropdown list
 	
@@ -862,6 +792,77 @@ function setEventListeners(){
 	};      
 }
 
+function readFile(){
+		
+	var file = this.files[0];
+	
+	var reader = new FileReader();
+	
+	reader.onload = function( progressEvent ){
+		
+		// Entire file read as a string
+		
+		// The tokens/values in the file
+
+		// Separation between values is 1 or mode whitespaces
+
+		var tokens = this.result.split(/\s\s*/);
+
+		// Array of values; each value is a string
+		
+		var numVertices = parseInt( tokens[0] );
+		
+		// For every vertex we have 6 floating point values
+		
+		var i, j;
+		
+		var aux = 1;
+		
+		var newVertices = [];
+		
+		var newColors = []
+		
+		for( i = 0; i < numVertices; i++ ) {
+		
+			for( j = 0; j < 3; j++ ) {
+				
+				newVertices[ 3 * i + j ] = parseFloat( tokens[ aux++ ] );
+			}
+			
+			for( j = 0; j < 3; j++ ) {
+				
+				newColors[ 3 * i + j ] = parseFloat( tokens[ aux++ ] );
+			}
+		}
+				
+		// Assigning to the current model
+		// TODO: append instead of replace
+		
+		// vertices.push(newVertices);
+		// colors.push(newColors);
+		// vertices.concat(newVertices.slice());
+		// colors.concat(newColors.slice());
+		vertices = newVertices.slice();
+		
+		colors = newColors.slice();
+		
+		// Rendering the model just read
+	
+		initBuffers();
+
+		// RESET the transformations - NEED AUXILIARY FUNCTION !!
+		
+		tx = ty = tz = 0.0;
+					
+		angleXX = angleYY = angleZZ = 0.0;
+		
+		sx = sy = sz = 0.5;
+	};
+	
+	// Entire file read as a string
+		
+	reader.readAsText( file );		
+}
 //----------------------------------------------------------------------------
 //
 // WebGL Initialization

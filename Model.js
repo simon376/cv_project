@@ -38,9 +38,6 @@ class Model {
         this.translation.y = y;
         this.translation.z = z;
     }
-    get rotationXX() { return this.rotation.XX; }
-    get rotationYY() { return this.rotation.YY; }
-    get rotationZZ() { return this.rotation.ZZ; }
     
     setRotationXX(angle, speed, dir) { 
         this.rotation.XX.angle = angle;
@@ -56,6 +53,15 @@ class Model {
         this.rotation.ZZ.angle = angle;
         this.rotation.ZZ.speed = speed;
         this.rotation.ZZ.dir = dir;
+    }
+    toggleRotationXX(){
+        this.rotation.XX.on = !this.rotation.XX.on;
+    }
+    toggleRotationYY(){
+        this.rotation.YY.on = !this.rotation.YY.on;
+    }
+    toggleRotationZZ(){
+        this.rotation.ZZ.on = !this.rotation.ZZ.on;
     }
 
     setScale(x,y,z) { 

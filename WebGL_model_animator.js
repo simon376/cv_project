@@ -488,20 +488,23 @@ function animate() {
 
 		// Local rotations
 		// TODO: animate all the models
-		if( rotationXX_ON ) {
 
-			angleXX += rotationXX_DIR * rotationXX_SPEED * (90 * elapsed) / 1000.0;
-	    }
+		for(var i = 0; i < sceneModels.length; i++ )
+	    {
+			if( sceneModels[i].rotation.XX.on ) {
 
-		if( rotationYY_ON ) {
+				sceneModels[i].rotation.XX.angle += sceneModels[i].rotation.XX.dir * sceneModels[i].rotation.XX.speed * (90 * elapsed) / 1000.0;
+			}
+			if( sceneModels[i].rotation.YY.on ) {
 
-			angleYY += rotationYY_DIR * rotationYY_SPEED * (90 * elapsed) / 1000.0;
-	    }
+				sceneModels[i].rotation.YY.angle += sceneModels[i].rotation.YY.dir * sceneModels[i].rotation.YY.speed * (90 * elapsed) / 1000.0;
+			}
+			if( sceneModels[i].rotation.ZZ.on ) {
 
-		if( rotationZZ_ON ) {
+				sceneModels[i].rotation.ZZ.angle += sceneModels[i].rotation.ZZ.dir * sceneModels[i].rotation.ZZ.speed * (90 * elapsed) / 1000.0;
+			}
+		}
 
-			angleZZ += rotationZZ_DIR * rotationZZ_SPEED * (90 * elapsed) / 1000.0;
-	    }
 	}
 	
 	lastTime = timeNow;
@@ -638,10 +641,22 @@ function setEventListeners(){
 	};
 
 	// // Button events
-	// document.getElementById("prisma-button").onclick = function(){
-		
-	// 	sceneModels.push(new Cube());
-	// };
+	document.getElementById("rotating-cube-button").onclick = function(){
+		var x = Math.random()*2-1;
+		var y = Math.random()*2-1; 
+		var z = 0;
+		var scale = Math.random();
+		var c = new Cube();
+		c.setTranslation(x,y,z);
+		c.setScale(factor=scale);
+		c.setRotationXX(0.0,1.0,1);
+		c.setRotationYY(0.0,1.0,-1);
+		c.setRotationZZ(0.0,1.0,1);
+		c.toggleRotationXX();
+		c.toggleRotationYY();
+		c.toggleRotationZZ();
+		sceneModels.push(c);
+	};
 
 	
 

@@ -297,15 +297,15 @@ var models = [];
 
 // Handling the Vertex and the Color Buffers
 
-function initBuffers() {	
+function initBuffers(model) {	
 	
 	// Coordinates
 		
 	triangleVertexPositionBuffer = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.vertices), gl.STATIC_DRAW);
 	triangleVertexPositionBuffer.itemSize = 3;
-	triangleVertexPositionBuffer.numItems = vertices.length / 3;			
+	triangleVertexPositionBuffer.numItems = model.vertices.length / 3;			
 
 	// Associating to the vertex shader
 	
@@ -332,23 +332,19 @@ function initBuffers() {
 
 //  Drawing the model
 
-function drawModel( angleXX, angleYY, angleZZ, 
-					sx, sy, sz,
-					tx, ty, tz,
+function drawModel( model,
 					mvMatrix,
 					primitiveType ) {
 
     // Pay attention to transformation order !!
-    
-	mvMatrix = mult( mvMatrix, translationMatrix( tx, ty, tz ) );
+	mvMatrix = mult( mvMatrix, translationMatrix( model.translation.x, model.translation.y, model.translation.z ) );
 						 
-	mvMatrix = mult( mvMatrix, rotationZZMatrix( angleZZ ) );
+	mvMatrix = mult( mvMatrix, rotationZZMatrix( model.rotation.ZZ.angle ) );
 	
-	mvMatrix = mult( mvMatrix, rotationYYMatrix( angleYY ) );
+	mvMatrix = mult( mvMatrix, rotationYYMatrix( model.rotation.YY.angle ) );
 	
-	mvMatrix = mult( mvMatrix, rotationXXMatrix( angleXX ) );
-	
-	mvMatrix = mult( mvMatrix, scalingMatrix( sx, sy, sz ) );
+	mvMatrix = mult( mvMatrix, rotationXXMatrix( model.rotation.XX.angle ) );
+	mvMatrix = mult( mvMatrix, scalingMatrix( model.scale.x, model.scale.y, model.scale.z ) );
 						 
 	// Passing the Model View Matrix to apply the current transformation
 	
@@ -356,6 +352,9 @@ function drawModel( angleXX, angleYY, angleZZ,
 	
 	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(mvMatrix)));
 	
+
+	initBuffers(model);
+
 	// Drawing the contents of the vertex buffer
 	
 	// primitiveType allows drawing as filled triangles / wireframe / vertices
@@ -445,11 +444,22 @@ function drawScene() {
 	
 	// TODO: Create different Models and draw each of them separatly
 
-	drawModel( angleXX, angleYY, angleZZ, 
-	           sx, sy, sz,
-	           tx, ty, tz,
-	           mvMatrix,
+	
+	// Instantianting all scene models
+	// sceneModels is the global array defined in Model.js
+	for(var i = 0; i < sceneModels.length; i++ )
+	{ 
+		drawModel( sceneModels[i],
+			   mvMatrix,
 	           primitiveType );
+	}
+			   
+	
+	// drawModel( angleXX, angleYY, angleZZ, 
+	//            sx, sy, sz,
+	//            tx, ty, tz,
+	//            mvMatrix,
+	//            primitiveType );
 }
 
 //----------------------------------------------------------------------------
@@ -477,7 +487,7 @@ function animate() {
 	    }
 
 		// Local rotations
-		
+		// TODO: animate all the models
 		if( rotationXX_ON ) {
 
 			angleXX += rotationXX_DIR * rotationXX_SPEED * (90 * elapsed) / 1000.0;
@@ -537,13 +547,13 @@ function setEventListeners(){
 
     // Dropdown list
 	
-	var projection = document.getElementById("animation-selection");
+	var animation = document.getElementById("animation-selection");
 	
-	projection.addEventListener("click", function(){
+	animation.addEventListener("click", function(){
 				
 		// Getting the selection
 		
-		var p = projection.selectedIndex;
+		var p = animation.selectedIndex;
 		//TODO:  Based on the selection, show the corresponding form
 	
 		switch(p){
@@ -605,10 +615,33 @@ function setEventListeners(){
 
 	// Button events
 	document.getElementById("cube-button").onclick = function(){
-		
-		cube = new Cube();
-		models.push(cube);
+		var x = Math.random()*2-1;
+		var y = Math.random()*2-1; 
+		var z = 0;
+		var scale = Math.random();
+		var c = new Cube();
+		c.setTranslation(x,y,z);
+		c.setScale(factor=scale);
+		sceneModels.push(c);
 	};
+
+	// Button events
+	document.getElementById("tetraeder-button").onclick = function(){
+		var x = Math.random()*2-1;
+		var y = Math.random()*2-1;
+		var z = 0;
+		var scale = Math.random();
+		var t = new Tetrahedron();
+		t.setTranslation(x,y,z);
+		t.setScale(factor=scale);
+		sceneModels.push(t);
+	};
+
+	// // Button events
+	// document.getElementById("prisma-button").onclick = function(){
+		
+	// 	sceneModels.push(new Cube());
+	// };
 
 	
 
@@ -916,7 +949,6 @@ function runWebGL() {
 	
 	setEventListeners();
 	
-	initBuffers();
 	
 	tick();		// A timer controls the rendering / animation    
 

@@ -439,12 +439,7 @@ function drawScene() {
 	// GLOBAL TRANSFORMATION FOR THE WHOLE SCENE
 	
 	mvMatrix = translationMatrix( 0, 0, globalTz );
-	
-	// Instantianting the current model
-	
-	// TODO: Create different Models and draw each of them separatly
-
-	
+			
 	// Instantianting all scene models
 	// sceneModels is the global array defined in Model.js
 	for(var i = 0; i < sceneModels.length; i++ )
@@ -454,17 +449,11 @@ function drawScene() {
 	           primitiveType );
 	}
 			   
-	
-	// drawModel( angleXX, angleYY, angleZZ, 
-	//            sx, sy, sz,
-	//            tx, ty, tz,
-	//            mvMatrix,
-	//            primitiveType );
 }
 
 //----------------------------------------------------------------------------
 //
-//  NEW --- Animation
+// Animation
 //
 
 // Animation --- Updating transformation parameters
@@ -487,7 +476,6 @@ function animate() {
 	    }
 
 		// Local rotations
-		// TODO: animate all the models
 
 		for(var i = 0; i < sceneModels.length; i++ )
 	    {
@@ -839,7 +827,7 @@ function setEventListeners(){
 		}
 	};      
 }
-
+// not used rn
 function readFile(){
 		
 	var file = this.files[0];

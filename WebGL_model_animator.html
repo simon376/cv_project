@@ -71,6 +71,22 @@ Passing the Model-View Matrix and the Projection Matrix.
 
 </script>
 
+<script>
+	function changeForm(form) {
+		for (var i=1; i<form.length; i++){
+			var form_op = form.options[i].value;
+			if (form_op == form.value) {
+				document.getElementsByName(form_op)[0].style.display = "block";
+			}
+			else {
+				document.getElementsByName(form_op)[0].style.display = "none";
+			}
+		}
+	}
+
+
+</script>
+
 <!-- The JS files -->
 
 <!-- Some useful functions for browser compatibility -->
@@ -118,16 +134,20 @@ Passing the Model-View Matrix and the Projection Matrix.
 		
 				<button id="rotating-cube-button">+ Cube (Rotating)</button>
 		
-				</p>
+		</p>
 		
 			
 		<p>Add an <b>animation</b>:
+			<form>
+				<select id="animation-selection" onchange="changeForm(this)">
+					<option disabled selected value>Select an animation</option>
+					<option value="translation">Translation</option>
+					<option value="rotation">Rotation</option>
+					<option value="scale">Scale</option>
+				</select>
+			</form>
 		
-			<select id="animation-selection">
-				<option value="0">Translation</option>
-				<option value="1">Rotation</option>
-				<option value="2">Scale</option>
-			</select>
+
 			
 <!-- select one of the possible animations above and then only show the specified form, 
 	press submit to save the changes.
@@ -137,7 +157,7 @@ when you add a new model, those animations will be applied to the (last) selecte
 
 TODO: needs a "FormHandler" that takes care of the input values
 -->
-		<form>
+		<form name="translation" id="translation" style = "display: none">
 			<h2>Translation</h2>
 			<fieldset>
 			  <legend>Translate from:</legend>
@@ -154,7 +174,7 @@ TODO: needs a "FormHandler" that takes care of the input values
 			<input type="submit" name="t_submit" value="Submit">
 		</form>
 
-		<form>
+		<form name="rotation" id="rotation" style="display: none">
 			<h2>Rotation</h2>
 			<fieldset>
 					<legend>Rotation around:</legend>
@@ -177,7 +197,7 @@ TODO: needs a "FormHandler" that takes care of the input values
 			<input type="submit" name="r_submit" value="Submit">
 		</form>
 
-		<form>
+		<form name="scale" id="scale" style="display: none">
 			<h2>Scaling</h2>
 			<fieldset>
 			  <legend>Scale:</legend>

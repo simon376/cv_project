@@ -297,6 +297,7 @@ var models = [];
 
 // Handling the Vertex and the Color Buffers
 
+
 function initBuffers(model) {	
 	
 	// Coordinates
@@ -957,5 +958,7 @@ function runWebGL() {
 
 	outputInfos();
 }
+
+
 
 

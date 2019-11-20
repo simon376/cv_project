@@ -337,21 +337,22 @@ function drawModel( model,
 					mvMatrix,
 					primitiveType ) {
 
-    // Pay attention to transformation order !!
-	mvMatrix = mult( mvMatrix, translationMatrix( model.translation.x, model.translation.y, model.translation.z ) );
+	// Pay attention to transformation order !!
+	var matrix = model.getMatrix(mvMatrix);
+	// mvMatrix = mult( mvMatrix, translationMatrix( model.translation.x, model.translation.y, model.translation.z ) );
 						 
-	mvMatrix = mult( mvMatrix, rotationZZMatrix( model.rotation.ZZ.angle ) );
+	// mvMatrix = mult( mvMatrix, rotationZZMatrix( model.rotation.ZZ.angle ) );
 	
-	mvMatrix = mult( mvMatrix, rotationYYMatrix( model.rotation.YY.angle ) );
+	// mvMatrix = mult( mvMatrix, rotationYYMatrix( model.rotation.YY.angle ) );
 	
-	mvMatrix = mult( mvMatrix, rotationXXMatrix( model.rotation.XX.angle ) );
-	mvMatrix = mult( mvMatrix, scalingMatrix( model.scale.x, model.scale.y, model.scale.z ) );
+	// mvMatrix = mult( mvMatrix, rotationXXMatrix( model.rotation.XX.angle ) );
+	// mvMatrix = mult( mvMatrix, scalingMatrix( model.scale.x, model.scale.y, model.scale.z ) );
 						 
 	// Passing the Model View Matrix to apply the current transformation
 	
 	var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 	
-	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(mvMatrix)));
+	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(matrix)));
 	
 
 	initBuffers(model);
@@ -480,18 +481,7 @@ function animate() {
 
 		for(var i = 0; i < sceneModels.length; i++ )
 	    {
-			if( sceneModels[i].rotation.XX.on ) {
-
-				sceneModels[i].rotation.XX.angle += sceneModels[i].rotation.XX.dir * sceneModels[i].rotation.XX.speed * (90 * elapsed) / 1000.0;
-			}
-			if( sceneModels[i].rotation.YY.on ) {
-
-				sceneModels[i].rotation.YY.angle += sceneModels[i].rotation.YY.dir * sceneModels[i].rotation.YY.speed * (90 * elapsed) / 1000.0;
-			}
-			if( sceneModels[i].rotation.ZZ.on ) {
-
-				sceneModels[i].rotation.ZZ.angle += sceneModels[i].rotation.ZZ.dir * sceneModels[i].rotation.ZZ.speed * (90 * elapsed) / 1000.0;
-			}
+			sceneModels[i].rotateLocal(elapsed);
 		}
 
 	}

@@ -443,19 +443,9 @@ function drawScene() {
 	mvMatrix = translationMatrix( 0, 0, globalTz );
 			
 	// Instantianting all scene models
-	// sceneModels is the global array defined in Model.js
-	// TODO: change to nodes instead of models
-
 	scenegraph.children.forEach(child => {
 		drawModel(child.model,child.model.getMatrix(), primitiveType);
 	});
-	// for(var i = 0; i < sceneModels.length; i++ )
-	// { 
-	// 	// TODO update global matrix here (use node instead of model)
-	// 	drawModel( sceneModels[i],
-	// 		   mvMatrix,
-	//            primitiveType );
-	// }
 			   
 }
 
@@ -488,10 +478,6 @@ function animate() {
 		scenegraph.children.forEach(child => {
 			child.model.rotateLocal(elapsed);
 		});
-		// for(var i = 0; i < sceneModels.length; i++ )
-	    // {
-		// 	sceneModels[i].rotateLocal(elapsed);
-		// }
 
 	}
 	
@@ -638,7 +624,7 @@ function setEventListeners(){
 	};
 
 	// // Button events
-	document.getElementById("rotating-cube-button").onclick = function(){
+	document.getElementById("add-to-base-button").onclick = function(){
 		var x = Math.random()*2-1;
 		var y = Math.random()*2-1; 
 		var z = 0;
@@ -655,6 +641,31 @@ function setEventListeners(){
 
 		var n = new GraphNode(c);
 		n.setParent(scenegraph);
+		graphnodes.push(n);
+
+		console.log(scenegraph.print());
+		// sceneModels.push(c);
+	};
+
+	// // Button events
+	document.getElementById("add-to-last-button").onclick = function(){
+		var x = Math.random()*2-1;
+		var y = Math.random()*2-1; 
+		var z = 0;
+		var scale = Math.random();
+		var c = new Cube();
+		c.setTranslation(x,y,z);
+		c.setScale(factor=scale);
+		c.setRotationXX(0.0,1.0,1);
+		c.setRotationYY(0.0,1.0,-1);
+		c.setRotationZZ(0.0,1.0,1);
+		c.toggleRotationXX();
+		c.toggleRotationYY();
+		c.toggleRotationZZ();
+
+		var n = new GraphNode(c);
+		n.setParent(graphnodes[graphnodes.length-1]);
+		// n.setParent(scenegraph);
 		graphnodes.push(n);
 
 		console.log(scenegraph.print());

@@ -164,40 +164,51 @@ TODO: needs a "FormHandler" that takes care of the input values
 			<h2>Translation</h2>
 			<fieldset>
 			  <legend>Translate from:</legend>
-			  X:	<input type="text" name="t_orig_x" value="0"><br>
-			  Y:	<input type="text" name="t_orig_y" value="0"><br>
-			  Z:	<input type="text" name="t_orig_z" value="0"><br>
+			  X:	<input type="text" id="t_orig_x" value="0"><br>
+			  Y:	<input type="text" id="t_orig_y" value="0"><br>
+			  Z:	<input type="text" id="t_orig_z" value="0"><br>
 			</fieldset>
 			<fieldset>
 			  <legend>Translate to:</legend>
-			  X:	<input type="text" name="t_dest_x" value="0"><br>
-			  Y:	<input type="text" name="t_dest_y" value="0"><br>
-			  Z:	<input type="text" name="t_dest_z" value="0"><br>
+			  X:	<input type="text" id="t_dest_x" value="0"><br>
+			  Y:	<input type="text" id="t_dest_y" value="0"><br>
+			  Z:	<input type="text" id="t_dest_z" value="0"><br>
 			</fieldset>
-			<input type="submit" name="t_submit" value="Submit">
+			<button type="button" id="t_submit">Add Translation</button>
 		</form>
 
 		<form name="rotation" id="rotation" style="display: none">
 			<h2>Rotation</h2>
 			<fieldset>
-					<legend>Rotation around:</legend>
-					<input type="radio" name="rotate_around" value="itself" checked> itself<br>
-					<input type="radio" name="rotate_around" value="third-party"> third-party<br>
+			<select id="transformation-selection">
+					<option value="0">global rotation</option>
+					<option value="1">local rotation</option>
+			</select>
+
+					<!-- <legend>Rotation around:</legend>
+					<input type="radio" id="rotate_around" value="itself" checked> itself<br>
+					<input type="radio" id="rotate_around" value="third-party"> third-party<br> -->
 					<fieldset>
-							<legend>Rotate around:</legend>
-							X:	<input type="text" name="r_x" value="0"><br>
-							Y:	<input type="text" name="r_y" value="0"><br>
-							Z:	<input type="text" name="r_z" value="0"><br>
+						<!-- TODO: change into angle/speed/dir -->
+							<legend>Rotate in deg:</legend>
+							XX(angle/speed/dir):	<input type="text" id="xx_angle" value="0"> 	<input type="text" id="xx_speed" value="1.0"> 	<input type="text" id="xx_dir" value="1"><br>
+							YY(angle/speed/dir):	<input type="text" id="yy_angle" value="0"> 	<input type="text" id="yy_speed" value="1.0"> 	<input type="text" id="yy_dir" value="-1"><br>
+							ZZ(angle/speed/dir):	<input type="text" id="zz_angle" value="0"> 	<input type="text" id="zz_speed" value="1.0"> 	<input type="text" id="zz_dir" value="1"><br>
 						  </fieldset>
 			  
 				  </fieldset>
 	  
 			<fieldset>
-			  <legend>Rotation direction:</legend>
-			  <input type="radio" name="direction" value="CCW" checked> CCW<br>
-			  <input type="radio" name="direction" value="CW"> CW<br>
+			<select id="direction-selection">
+					<option value="0">CCW</option>
+					<option value="1">CW</option>
+			</select>
+	
+			  <!-- <legend>Rotation direction:</legend>
+			  <input type="radio" id="direction" value="CCW" checked> CCW<br>
+			  <input type="radio" id="direction" value="CW"> CW<br> -->
 			</fieldset>
-			<input type="submit" name="r_submit" value="Submit">
+			<button type="button" id="r_submit">Add Rotation</button>
 		</form>
 
 		<form name="scale" id="scale" style="display: none">

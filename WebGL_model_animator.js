@@ -445,13 +445,17 @@ function drawScene() {
 	// Instantianting all scene models
 	// sceneModels is the global array defined in Model.js
 	// TODO: change to nodes instead of models
-	for(var i = 0; i < sceneModels.length; i++ )
-	{ 
-		// TODO update global matrix here (use node instead of model)
-		drawModel( sceneModels[i],
-			   mvMatrix,
-	           primitiveType );
-	}
+
+	scenegraph.children.forEach(child => {
+		drawModel(child.model,child.model.getMatrix(), primitiveType);
+	});
+	// for(var i = 0; i < sceneModels.length; i++ )
+	// { 
+	// 	// TODO update global matrix here (use node instead of model)
+	// 	drawModel( sceneModels[i],
+	// 		   mvMatrix,
+	//            primitiveType );
+	// }
 			   
 }
 
@@ -481,10 +485,13 @@ function animate() {
 
 		// Local rotations
 
-		for(var i = 0; i < sceneModels.length; i++ )
-	    {
-			sceneModels[i].rotateLocal(elapsed);
-		}
+		scenegraph.children.forEach(child => {
+			child.model.rotateLocal(elapsed);
+		});
+		// for(var i = 0; i < sceneModels.length; i++ )
+	    // {
+		// 	sceneModels[i].rotateLocal(elapsed);
+		// }
 
 	}
 	

@@ -603,7 +603,7 @@ function setEventListeners(){
 		n.setParent(scenegraph);
 		graphnodes.push(n); 	
 		// TODO does JS use references? are graphnodes & scenegraph objects the same? if not, how do i update the right element in the scenegraph?
-		console.log(scenegraph.print());
+		console.log(scenegraph.print("", true));
 		// sceneModels.push(c);
 	};
 
@@ -620,7 +620,7 @@ function setEventListeners(){
 		var n = new GraphNode(t);
 		n.setParent(scenegraph);
 		graphnodes.push(n);
-		console.log(scenegraph.print());
+		console.log(scenegraph.print("", true));
 		// sceneModels.push(t);
 	};
 
@@ -644,7 +644,7 @@ function setEventListeners(){
 		n.setParent(scenegraph);
 		graphnodes.push(n);
 
-		console.log(scenegraph.print());
+		console.log(scenegraph.print("", true));
 		// sceneModels.push(c);
 	};
 
@@ -669,7 +669,7 @@ function setEventListeners(){
 		// n.setParent(scenegraph);
 		graphnodes.push(n);
 
-		console.log(scenegraph.print());
+		console.log(scenegraph.print("", true));
 		// sceneModels.push(c);
 	};
 

@@ -39,20 +39,33 @@ class GraphNode {
 
     }
 
-    // TODO: print all children
-    print(){
-        var string = "";
-        if(this.children.length > 0){
-            for(var i = 0; i < this.children.length; i++){
-                string += (this.children[i].print() + "-");
-            }
-            string += "###";
+    print(indent, last)
+    {
+        var log = indent;
+        if (last)
+        {
+            log += "\\-";
+            // console.log("\\-");
+            indent += "  ";
         }
-        if(this.model)
-            string += this.model.toString();
         else
-            string += "root";
-        return string;
+        {
+            log += "|-";
+            // console.log("|-");
+            indent += "| ";
+        }
+        if(this.model){
+            log += this.model.toString();
+        }
+        else
+            log += "root";
+        //     console.log(this.model.toString());
+        // else
+        //     console.log("root");
+        console.log(log);
+
+        for (var i = 0; i < this.children.length; i++)
+            this.children[i].print(indent, i == (this.children.length - 1));
     }
 }
 

@@ -601,7 +601,8 @@ function setEventListeners(){
 		c.setScale(factor=scale);
 		var n = new GraphNode(c);
 		n.setParent(scenegraph);
-		graphnodes.push(n);
+		graphnodes.push(n); 	
+		// TODO does JS use references? are graphnodes & scenegraph objects the same? if not, how do i update the right element in the scenegraph?
 		console.log(scenegraph.print());
 		// sceneModels.push(c);
 	};
@@ -851,8 +852,81 @@ function setEventListeners(){
 		{
 			gl.enable( gl.DEPTH_TEST );
 		}
+	};
+	
+	//	Translation
+	document.getElementById("t_submit").onclick = function(){
+		
+		var o_x = document.getElementById("t_orig_x").value;
+		var o_y = document.getElementById("t_orig_y").value;
+		var o_z = document.getElementById("t_orig_z").value;
+		var d_x = document.getElementById("t_dest_x").value;
+		var d_y = document.getElementById("t_dest_y").value;
+		var d_z = document.getElementById("t_dest_z").value;
+		var logmsg = "translation from: (" + o_x + "|" + o_y + "|" + o_z
+						+ ") to (" + d_x + "|" + d_y + "|" + d_z + ")";
+		console.log(logmsg);
+		var node = graphnodes.pop();
+		node.model.setTranslation(d_x,d_y,d_z);
+		graphnodes.push(node);
+
 	};      
+
+	//	Rotation
+	document.getElementById("r_submit").onclick = function(){		
+		var x_a = document.getElementById("xx_angle").value;
+		var x_s = document.getElementById("xx_speed").value;
+		var x_d = document.getElementById("xx_dir").value;
+		var y_a = document.getElementById("yy_angle").value;
+		var y_s = document.getElementById("yy_speed").value;
+		var y_d = document.getElementById("yy_dir").value;
+		var z_a = document.getElementById("zz_angle").value;
+		var z_s = document.getElementById("zz_speed").value;
+		var z_d = document.getElementById("zz_dir").value;
+		// var logmsg = "rotation in deg: (" + r_x + "|" + r_y + "|" + r_z + ")";
+		// console.log(logmsg);
+		var node = graphnodes.pop();
+		// TODO: fix
+		// node.model.setRotationXX(0,0,0)
+		// node.model.setRotationYY(0,0,0)
+		// node.model.setRotationZZ(0,0,0)
+		node.model.setRotationXX(x_a,x_s,x_d)
+		node.model.setRotationYY(y_a,y_s,y_d)
+		node.model.setRotationZZ(z_a,z_s,z_d)
+		graphnodes.push(node);
+	};      
+		// rotation direction
+	var direction = document.getElementById("direction-selection");
+	direction.addEventListener("click", function(){
+		// Getting the selection
+		var p = direction.selectedIndex;
+				// TODO: change rotation direction of last selected node	
+		switch(p){
+			case 0 : 
+				break;
+			
+			case 1 : 
+				break;
+		}  	
+	});  
+	var rotation = document.getElementById("transformation-selection");
+	rotation.addEventListener("click", function(){
+		// Getting the selection
+		var p = rotation.selectedIndex;	
+		// TODO: change global or local matrix of last selected node
+		switch(p){
+			case 0 : 
+				break;
+			case 1 : 
+				break;
+		}  	
+	});  
+	
+
 }
+
+
+
 // not used rn
 function readFile(){
 		

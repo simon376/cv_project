@@ -1,10 +1,11 @@
 // WebGL Scene Graph Node
 
-class Node {
-    constructor() {
+class GraphNode {
+    constructor(model) {
         this.children = [];
-        this.localMatrix = mat4();
+        // this.localMatrix = mat4();
         this.globalMatrix = mat4();
+        this.model = model;
     }
 
     setParent(parent){
@@ -17,17 +18,17 @@ class Node {
 
         // add this node as a child to new parent
         if(parent)
-            parent.children.append(this);
+            parent.children.push(this);
         
         this.parent = parent;
     }
 
     updateGlobalMatrix(parentGlobalMatrix){
         if(parentGlobalMatrix)
-            this.globalMatrix = mult(this.localMatrix, parentGlobalMatrix);
+            this.globalMatrix = mult(this.model.getMatrix(), parentGlobalMatrix);
         // no matrix was passed in so just copy localMatrix to worldMatrix
         else
-            this.globalMatrix = this.localMatrix;
+            this.globalMatrix = this.model.getMatrix();
 
 
         // process children
@@ -37,4 +38,23 @@ class Node {
         })
 
     }
+
+    // TODO: print all children
+    print(){
+        var string = "";
+        if(this.children.length > 0){
+            for(var i = 0; i < this.children.length; i++){
+                string += (this.children[i].print() + "-");
+            }
+            string += "###";
+        }
+        if(this.model)
+            string += this.model.toString();
+        else
+            string += "root";
+        return string;
+    }
 }
+
+var graphnodes = [];
+var scenegraph = new GraphNode();

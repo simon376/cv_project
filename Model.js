@@ -32,6 +32,7 @@ class Model {
         this.scale = {x: 1, y: 1, z: 1};
      } // todo: interface  / abstract class ?
     
+    toString(){ return "Model";} 
     setTranslation(x,y,z) { 
         this.translation.x = x;
         this.translation.y = y;
@@ -156,6 +157,8 @@ class Model {
              1.000000, -1.000000,  1.000000, 	 
         ];
         }
+        toString(){ return "Cube";} 
+
   }
 
   class Tetrahedron extends Model {
@@ -176,6 +179,8 @@ class Model {
             0.000000, -1.000000,  0.707000,
       ];
     }
+    toString(){ return "Tetrahedron";} 
+
 }
 
 // IMPORTANT - add Models to global Array

@@ -444,8 +444,10 @@ function drawScene() {
 			
 	// Instantianting all scene models
 	// sceneModels is the global array defined in Model.js
+	// TODO: change to nodes instead of models
 	for(var i = 0; i < sceneModels.length; i++ )
 	{ 
+		// TODO update global matrix here (use node instead of model)
 		drawModel( sceneModels[i],
 			   mvMatrix,
 	           primitiveType );
@@ -604,7 +606,11 @@ function setEventListeners(){
 		var c = new Cube();
 		c.setTranslation(x,y,z);
 		c.setScale(factor=scale);
-		sceneModels.push(c);
+		var n = new GraphNode(c);
+		n.setParent(scenegraph);
+		graphnodes.push(n);
+		console.log(scenegraph.print());
+		// sceneModels.push(c);
 	};
 
 	// Button events
@@ -616,7 +622,12 @@ function setEventListeners(){
 		var t = new Tetrahedron();
 		t.setTranslation(x,y,z);
 		t.setScale(factor=scale);
-		sceneModels.push(t);
+
+		var n = new GraphNode(t);
+		n.setParent(scenegraph);
+		graphnodes.push(n);
+		console.log(scenegraph.print());
+		// sceneModels.push(t);
 	};
 
 	// // Button events
@@ -634,7 +645,13 @@ function setEventListeners(){
 		c.toggleRotationXX();
 		c.toggleRotationYY();
 		c.toggleRotationZZ();
-		sceneModels.push(c);
+
+		var n = new GraphNode(c);
+		n.setParent(scenegraph);
+		graphnodes.push(n);
+
+		console.log(scenegraph.print());
+		// sceneModels.push(c);
 	};
 
 	

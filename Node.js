@@ -5,7 +5,10 @@ class GraphNode {
         this.children = [];
         // this.localMatrix = mat4();
         this.globalMatrix = mat4();
-        this.model = model;
+        if(model)
+            this.model = model;
+        else
+            this.model = new Model();
         this.isSelected = false;
     }
 
@@ -25,15 +28,18 @@ class GraphNode {
     }
 
     updateGlobalMatrix(parentGlobalMatrix){
+        var m;
+        if(this.model)
+            var m = this.model.getMatrix();
+        if(!m)
+            m = mat4();
+
         if(parentGlobalMatrix)
-            this.globalMatrix = mult(this.model.getMatrix(), parentGlobalMatrix);
+            this.globalMatrix = mult(parentGlobalMatrix, m);
         // no matrix was passed in so just copy localMatrix to worldMatrix
-        else{
-            if(this.model)
-                this.globalMatrix = this.model.getMatrix();
-            else
-                this.globalMatrix = mat4();
-        }
+        else
+            this.globalMatrix = m;
+        
         // process children
         var global = this.globalMatrix;
         this.children.forEach(function(child) {
@@ -127,28 +133,44 @@ var scenegraph = new GraphNode();
 
 // for testing
 
-var c = new Cube();
-t2.setRotationZZ(0,0.25,-1);
-c.toggleRotationZZ();
-
-var sunNode = new GraphNode(c);
+var sunNode = new GraphNode(new Cube());
 var t = new Tetrahedron();
-t.setTranslation(2,0,0);//2 away from sun
-t.setScale(0.5);
-t.setRotationZZ(0,0.5,1);
-t.toggleRotationZZ();
+// t.setTranslation(2,0,0);    //2 away from sun
+t.setScale(0.75);
+// t.setRotationZZ(0,0.5,1);   // this should only be local..
+// t.toggleRotationZZ();
 var earthNode = new GraphNode(t);
 
 var t2 = new Tetrahedron();
-t2.setTranslation(1,0,0);
-t2.setScale(0.25);
-t2.setRotationZZ(0,1,-1);
-t2.toggleRotationZZ();
-
+// t2.setTranslation(1,0,0);   // 1 away from earth
+t2.setScale(0.5);
+// t2.setRotationZZ(0,1,-1);
+// t2.toggleRotationZZ();
 var moonNode = new GraphNode(t2);
-sunNode.setParent(scenegraph);
-earthNode.setParent(sunNode);
-moonNode.setParent(earthNode);
+
+var solarSystemNode = new GraphNode();
+solarSystemNode.model.setRotationZZ(0,0.25,-1);
+solarSystemNode.model.toggleRotationZZ();
+
+
+var earthOrbitNode = new GraphNode();
+earthOrbitNode.model.setTranslation(2,0,0);
+earthOrbitNode.model.setRotationZZ(0,0.25,-1);
+earthOrbitNode.model.toggleRotationZZ();
+
+var moonOrbitNode = new GraphNode();
+moonOrbitNode.model.setTranslation(1,0,0);
+
+solarSystemNode.setParent(scenegraph);
+sunNode.setParent(solarSystemNode);
+earthOrbitNode.setParent(solarSystemNode);
+moonOrbitNode.setParent(earthOrbitNode);
+earthNode.setParent(earthOrbitNode);
+moonNode.setParent(moonOrbitNode);
+graphnodes.push(solarSystemNode);
+graphnodes.push(earthOrbitNode);
 graphnodes.push(sunNode);
 graphnodes.push(earthNode);
 graphnodes.push(moonNode);
+graphnodes.push(moonOrbitNode);
+

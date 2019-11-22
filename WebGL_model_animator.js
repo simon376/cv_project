@@ -333,12 +333,13 @@ function initBuffers(model) {
 
 //  Drawing the model
 
-function drawModel( model,
+function drawModel( node,
 					mvMatrix,
 					primitiveType ) {
 
-	// Pay attention to transformation order !!
-	var matrix = model.getMatrix(mvMatrix);	// this should add the global mvMatrix and the local transformations.. should..
+	var localMatrix = node.model.getMatrix();
+	var matrix = mult( node.globalMatrix, localMatrix ); // not sure if this is the correct order
+	// this should add the global mvMatrix and the local transformations.. should..
 						 
 	// Passing the Model View Matrix to apply the current transformation
 	
@@ -346,8 +347,9 @@ function drawModel( model,
 	
 	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(matrix)));
 	
-
-	initBuffers(model);
+	if(!node.model)
+		return;					
+	initBuffers(node.model);
 
 
 	// Drawing the contents of the vertex buffer
@@ -436,14 +438,14 @@ function drawScene() {
 	mvMatrix = translationMatrix( 0, 0, globalTz );
 	
 	// here, update the whole scenegraph and apply global transformation matrixes
-	scenegraph.updateGlobalMatrix();	
+	scenegraph.updateGlobalMatrix(mvMatrix);	
 
 	// use graphnodes-array to make sure everything gets drawn
 	graphnodes.forEach(node => {
 		if(node.isSelected)
-			drawModel(node.model,mvMatrix, gl.LINE_LOOP);
+			drawModel(node,mvMatrix, gl.LINE_LOOP);
 		else
-			drawModel(node.model,mvMatrix, primitiveType);
+			drawModel(node,mvMatrix, primitiveType);
 	});
 			   
 }
@@ -475,7 +477,7 @@ function animate() {
 
 		// Local rotations
 		graphnodes.forEach(node => {
-			node.model.rotateLocal(elapsed);
+			node.model.rotate(elapsed);
 		});
 
 	}
@@ -557,6 +559,18 @@ function setEventListeners(){
 
 
 	// // Button events
+	document.getElementById("node-to-root-button").onclick = function(){
+		addModel(new Model(), scenegraph);
+	};
+
+	document.getElementById("node-to-selected-button").onclick = function(){
+		var selected = getSelected();
+		if(selected)
+			addModel(new Model(), selected);
+		else
+			addModel(new Model(), scenegraph);
+	};
+
 	document.getElementById("cube-to-root-button").onclick = function(){
 		addModel(new Cube(), scenegraph);
 	};

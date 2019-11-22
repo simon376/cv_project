@@ -80,7 +80,9 @@ class Model {
             matrix = mat4();
         else
             matrix = mvMatrix;
-        // order? where did i get this? is this right?...
+        
+        // TRS
+
         matrix = mult( matrix, translationMatrix( this.translation.x, this.translation.y, this.translation.z ) );
 						 
         matrix = mult( matrix, rotationZZMatrix( this.rotation.ZZ.angle ) );
@@ -102,7 +104,7 @@ class Model {
         this.vertices = array;
     }
 
-    rotateLocal(elapsedTime){
+    rotate(elapsedTime){
         if( this.rotation.XX.on )
             this.rotation.XX.angle += this.rotation.XX.dir * this.rotation.XX.speed * (90 * elapsedTime) / 1000.0;
         if( this.rotation.YY.on )
@@ -110,7 +112,9 @@ class Model {
         if( this.rotation.ZZ.on )
             this.rotation.ZZ.angle += this.rotation.ZZ.dir * this.rotation.ZZ.speed * (90 * elapsedTime) / 1000.0;
     }
- 
+
+
+    
   }
   
   class Cube extends Model {

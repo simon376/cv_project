@@ -27,10 +27,12 @@ class GraphNode {
         if(parentGlobalMatrix)
             this.globalMatrix = mult(this.model.getMatrix(), parentGlobalMatrix);
         // no matrix was passed in so just copy localMatrix to worldMatrix
-        else
-            this.globalMatrix = this.model.getMatrix();
-
-
+        else{
+            if(this.model)
+                this.globalMatrix = this.model.getMatrix();
+            else
+                this.globalMatrix = mat4();
+        }
         // process children
         var global = this.globalMatrix;
         this.children.forEach(function(child) {

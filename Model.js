@@ -74,7 +74,6 @@ class Model {
         this.scale.x = this.scale.y = this.scale.z = factor;
     }
     
-    // TODO ? not used right now
     getMatrix(mvMatrix){
         var matrix;
         if(!mvMatrix)

@@ -443,8 +443,10 @@ function drawScene() {
 	mvMatrix = translationMatrix( 0, 0, globalTz );
 			
 	// Instantianting all scene models
-	scenegraph.children.forEach(child => {
-		drawModel(child.model,child.model.getMatrix(), primitiveType);
+	// TODO recursively draw each model
+	scenegraph.updateGlobalMatrix();
+	graphnodes.forEach(node => {
+		drawModel(node.model,mvMatrix, primitiveType);
 	});
 			   
 }
@@ -474,10 +476,12 @@ function animate() {
 	    }
 
 		// Local rotations
-
-		scenegraph.children.forEach(child => {
-			child.model.rotateLocal(elapsed);
+		graphnodes.forEach(node => {
+			node.model.rotateLocal(elapsed);
 		});
+		// scenegraph.children.forEach(child => {
+		// 	child.model.rotateLocal(elapsed);
+		// });
 
 	}
 	
@@ -666,7 +670,6 @@ function setEventListeners(){
 
 		var n = new GraphNode(c);
 		n.setParent(graphnodes[graphnodes.length-1]);
-		// n.setParent(scenegraph);
 		graphnodes.push(n);
 
 		console.log(scenegraph.print("", true));

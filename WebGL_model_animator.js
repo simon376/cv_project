@@ -468,16 +468,17 @@ function animate() {
 		var elapsed = timeNow - lastTime;
 		
 		// Global rotation
-		// TODO: Translation, Scaling
 
 		if( globalRotationYY_ON ) {
 
 			globalAngleYY += globalRotationYY_DIR * globalRotationYY_SPEED * (90 * elapsed) / 1000.0;
 	    }
 
-		// Local rotations
+		// update local transformations 
+		// TODO:  Scaling
 		graphnodes.forEach(node => {
 			node.model.rotate(elapsed);
+			node.model.translate(elapsed);
 		});
 
 	}

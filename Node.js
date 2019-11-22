@@ -131,21 +131,15 @@ var graphnodes = [];
 var selectedIndex = -1;
 var scenegraph = new GraphNode();
 
-// for testing
+// --       Rotation Test   "Solar System"
 
 var sunNode = new GraphNode(new Cube());
 var t = new Tetrahedron();
-// t.setTranslation(2,0,0);    //2 away from sun
 t.setScale(0.75);
-// t.setRotationZZ(0,0.5,1);   // this should only be local..
-// t.toggleRotationZZ();
 var earthNode = new GraphNode(t);
 
 var t2 = new Tetrahedron();
-// t2.setTranslation(1,0,0);   // 1 away from earth
 t2.setScale(0.5);
-// t2.setRotationZZ(0,1,-1);
-// t2.toggleRotationZZ();
 var moonNode = new GraphNode(t2);
 
 var solarSystemNode = new GraphNode();
@@ -154,12 +148,12 @@ solarSystemNode.model.toggleRotationZZ();
 
 
 var earthOrbitNode = new GraphNode();
-earthOrbitNode.model.setTranslation(2,0,0);
-earthOrbitNode.model.setRotationZZ(0,0.25,-1);
+earthOrbitNode.model.setTranslationOrigin(2,0,0);
+earthOrbitNode.model.setRotationZZ(0,0.5,-1);
 earthOrbitNode.model.toggleRotationZZ();
 
 var moonOrbitNode = new GraphNode();
-moonOrbitNode.model.setTranslation(1,0,0);
+moonOrbitNode.model.setTranslationOrigin(1,0,0);
 
 solarSystemNode.setParent(scenegraph);
 sunNode.setParent(solarSystemNode);
@@ -167,6 +161,7 @@ earthOrbitNode.setParent(solarSystemNode);
 moonOrbitNode.setParent(earthOrbitNode);
 earthNode.setParent(earthOrbitNode);
 moonNode.setParent(moonOrbitNode);
+
 graphnodes.push(solarSystemNode);
 graphnodes.push(earthOrbitNode);
 graphnodes.push(sunNode);
@@ -174,3 +169,11 @@ graphnodes.push(earthNode);
 graphnodes.push(moonNode);
 graphnodes.push(moonOrbitNode);
 
+//  ---     Translation Test
+
+// var transTest = new GraphNode(new Cube());
+// transTest.model.setTranslationDestination(1,1,0);
+// transTest.model.translation.speed = 0.01;
+// transTest.model.toggleTranslationAnimation();
+// transTest.setParent(scenegraph);
+// graphnodes.push(transTest);

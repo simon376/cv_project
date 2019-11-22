@@ -338,15 +338,7 @@ function drawModel( model,
 					primitiveType ) {
 
 	// Pay attention to transformation order !!
-	var matrix = model.getMatrix(mvMatrix);
-	// mvMatrix = mult( mvMatrix, translationMatrix( model.translation.x, model.translation.y, model.translation.z ) );
-						 
-	// mvMatrix = mult( mvMatrix, rotationZZMatrix( model.rotation.ZZ.angle ) );
-	
-	// mvMatrix = mult( mvMatrix, rotationYYMatrix( model.rotation.YY.angle ) );
-	
-	// mvMatrix = mult( mvMatrix, rotationXXMatrix( model.rotation.XX.angle ) );
-	// mvMatrix = mult( mvMatrix, scalingMatrix( model.scale.x, model.scale.y, model.scale.z ) );
+	var matrix = model.getMatrix(mvMatrix);	// this should add the global mvMatrix and the local transformations.. should..
 						 
 	// Passing the Model View Matrix to apply the current transformation
 	
@@ -442,8 +434,9 @@ function drawScene() {
 	// GLOBAL TRANSFORMATION FOR THE WHOLE SCENE
 	
 	mvMatrix = translationMatrix( 0, 0, globalTz );
-			
-	scenegraph.updateGlobalMatrix();
+	
+	// here, update the whole scenegraph and apply global transformation matrixes
+	scenegraph.updateGlobalMatrix();	
 
 	// use graphnodes-array to make sure everything gets drawn
 	graphnodes.forEach(node => {
@@ -561,92 +554,31 @@ function setEventListeners(){
 			case 2 : primitiveType = gl.POINTS; break;
 		}
 	});      
-//TODO: remove / replace with new models
-	// Button events
-	document.getElementById("cube-button").onclick = function(){
-		var x = Math.random()*10-5;
-		var y = Math.random()*2-1; 
-		var z = 0;
-		var scale = Math.random();
-		var c = new Cube();
-		c.setTranslation(x,y,z);
-		c.setScale(factor=scale);
-		var n = new GraphNode(c);
-		n.setParent(scenegraph);
-		graphnodes.push(n); 
-		selectLastNode();	
-		// TODO does JS use references? are graphnodes & scenegraph objects the same? if not, how do i update the right element in the scenegraph?
-		console.log(scenegraph.print("", true));
-		// sceneModels.push(c);
-	};
 
-	// Button events
-	document.getElementById("tetraeder-button").onclick = function(){
-		var x = Math.random()*10-5;
-		var y = Math.random()*2-1;
-		var z = 0;
-		var scale = Math.random();
-		var t = new Tetrahedron();
-		t.setTranslation(x,y,z);
-		t.setScale(factor=scale);
-
-		var n = new GraphNode(t);
-		n.setParent(scenegraph);
-		graphnodes.push(n);
-		selectLastNode();	
-		console.log(scenegraph.print("", true));
-		// sceneModels.push(t);
-	};
 
 	// // Button events
-	document.getElementById("add-to-base-button").onclick = function(){
-		var x = Math.random()*10-5;
-		var y = Math.random()*2-1; 
-		var z = 0;
-		var scale = Math.random();
-		var c = new Cube();
-		c.setTranslation(x,y,z);
-		c.setScale(factor=scale);
-		c.setRotationXX(0.0,1.0,1);
-		c.setRotationYY(0.0,1.0,-1);
-		c.setRotationZZ(0.0,1.0,1);
-		c.toggleRotationXX();
-		c.toggleRotationYY();
-		c.toggleRotationZZ();
-
-		var n = new GraphNode(c);
-		n.setParent(scenegraph);
-		graphnodes.push(n);
-		selectLastNode();	
-
-		console.log(scenegraph.print("", true));
-		// sceneModels.push(c);
+	document.getElementById("cube-to-root-button").onclick = function(){
+		addModel(new Cube(), scenegraph);
 	};
 
-	//TODO add to selected
-	// // Button events
-	document.getElementById("add-to-last-button").onclick = function(){
-		var x = Math.random()*10-5;
-		var y = Math.random()*2-1; 
-		var z = 0;
-		var scale = Math.random();
-		var c = new Cube();
-		c.setTranslation(x,y,z);
-		c.setScale(factor=scale);
-		c.setRotationXX(0.0,1.0,1);
-		c.setRotationYY(0.0,1.0,-1);
-		c.setRotationZZ(0.0,1.0,1);
-		c.toggleRotationXX();
-		c.toggleRotationYY();
-		c.toggleRotationZZ();
+	document.getElementById("cube-to-selected-button").onclick = function(){
+		var selected = getSelected();
+		if(selected)
+			addModel(new Cube(), selected);
+		else
+			addModel(new Cube(), scenegraph);
+	};
 
-		var n = new GraphNode(c);
-		n.setParent(graphnodes[graphnodes.length-1]);
-		graphnodes.push(n);
-		selectLastNode();	
+	document.getElementById("tetrahedron-to-root-button").onclick = function(){
+		addModel(new Tetrahedron(), scenegraph);
+	};
 
-		console.log(scenegraph.print("", true));
-		// sceneModels.push(c);
+	document.getElementById("tetrahedron-to-selected-button").onclick = function(){
+		var selected = getSelected();
+		if(selected)
+			addModel(new Tetrahedron(), selected);
+		else
+			addModel(new Tetrahedron(), scenegraph);
 	};
 
 	
@@ -789,7 +721,27 @@ function setEventListeners(){
 
 }
 
+function addModel(model, parent){
+    var x = Math.random()*10-5;
+    var y = Math.random()*2-1; 
+    var z = 0; 
+    var scale = Math.random();
+    model.setTranslation(x,y,z);
+    model.setScale(factor=scale);
+    model.setRotationXX(0.0,1.0,1);
+    model.setRotationYY(0.0,1.0,-1);
+    model.setRotationZZ(0.0,1.0,1);
+    model.toggleRotationXX();
+    model.toggleRotationYY();
+    model.toggleRotationZZ();
 
+    var n = new GraphNode(model);
+    n.setParent(parent);
+    graphnodes.push(n);
+    selectLastNode();	
+
+    scenegraph.print("", true);
+}
 
 // not used rn
 /// Deprecated

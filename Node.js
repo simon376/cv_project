@@ -112,6 +112,43 @@ function selectNextNode(){
         selectedIndex = -1;
 }
 
+function getSelected(){
+    if(selectedIndex >= 0){
+        if(graphnodes.length > 0){
+            return graphnodes[selectedIndex];
+        }    
+    }
+    return null;
+}
+
 var graphnodes = [];
 var selectedIndex = -1;
 var scenegraph = new GraphNode();
+
+// for testing
+
+var c = new Cube();
+t2.setRotationZZ(0,0.25,-1);
+c.toggleRotationZZ();
+
+var sunNode = new GraphNode(c);
+var t = new Tetrahedron();
+t.setTranslation(2,0,0);//2 away from sun
+t.setScale(0.5);
+t.setRotationZZ(0,0.5,1);
+t.toggleRotationZZ();
+var earthNode = new GraphNode(t);
+
+var t2 = new Tetrahedron();
+t2.setTranslation(1,0,0);
+t2.setScale(0.25);
+t2.setRotationZZ(0,1,-1);
+t2.toggleRotationZZ();
+
+var moonNode = new GraphNode(t2);
+sunNode.setParent(scenegraph);
+earthNode.setParent(sunNode);
+moonNode.setParent(earthNode);
+graphnodes.push(sunNode);
+graphnodes.push(earthNode);
+graphnodes.push(moonNode);

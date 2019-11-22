@@ -1,6 +1,6 @@
 
-var sceneModels = []; // IMPORTANT: global Array containing all Models
 
+// TODO: add ModelFactory for easy setup
 class Model {
 
     constructor() {
@@ -14,20 +14,20 @@ class Model {
             XX: {
                 on: false,
                 angle: 0,
-                speed: 0,
-                dir: 0
+                speed: 1,
+                dir: 1
             },
             YY: {
                 on: false,
                 angle: 0,
-                speed: 0,
-                dir: 0
+                speed: 1,
+                dir: 1
             },
             ZZ: {
                 on: false,
                 angle: 0,
-                speed: 0,
-                dir: 0
+                speed: 1,
+                dir: 1
             }};
         this.scale = {x: 1, y: 1, z: 1};
      } // todo: interface  / abstract class ?

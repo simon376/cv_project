@@ -6,6 +6,7 @@ class GraphNode {
         // this.localMatrix = mat4();
         this.globalMatrix = mat4();
         this.model = model;
+        this.isSelected = false;
     }
 
     setParent(parent){
@@ -69,7 +70,48 @@ class GraphNode {
         for (var i = 0; i < this.children.length; i++)
             this.children[i].print(indent, i == (this.children.length - 1));
     }
+
+}
+
+function selectLastNode(){
+    if(graphnodes.length > 0){
+        if(selectedIndex >= 0)
+            graphnodes[selectedIndex].isSelected = false;
+        selectedIndex = graphnodes.length-1;
+        graphnodes[selectedIndex].isSelected = true;
+    }
+    else
+    selectedIndex = -1;
+}
+
+function selectPreviousNode(){
+    if(graphnodes.length > 0){
+        if(selectedIndex >= 0)
+            graphnodes[selectedIndex].isSelected = false;
+        if(selectedIndex > 0)
+            selectedIndex -= 1;
+        else
+            selectedIndex = graphnodes.length -1;
+        graphnodes[selectedIndex].isSelected = true;
+    }
+    else
+        selectedIndex = -1;
+}
+
+function selectNextNode(){
+    if(graphnodes.length > 0){
+        if(selectedIndex >= 0)
+            graphnodes[selectedIndex].isSelected = false;
+        if(graphnodes.length - 1 > selectedIndex)
+            selectedIndex += 1;
+        else
+            selectedIndex = 0;
+        graphnodes[selectedIndex].isSelected = true;
+    }
+    else
+        selectedIndex = -1;
 }
 
 var graphnodes = [];
+var selectedIndex = -1;
 var scenegraph = new GraphNode();

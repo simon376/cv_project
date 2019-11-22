@@ -357,6 +357,7 @@ function drawModel( model,
 
 	initBuffers(model);
 
+
 	// Drawing the contents of the vertex buffer
 	
 	// primitiveType allows drawing as filled triangles / wireframe / vertices
@@ -402,8 +403,8 @@ function drawScene() {
 	if( projectionType == 0 ) {
 		
 		// For now, the default orthogonal view volume
-		
-		pMatrix = ortho( -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 );
+		// change the view volume perspective matrix
+		pMatrix = ortho( -6.0, 6.0, -2.0, 2.0, -1.0, 1.0 );
 		
 		// Global transformation !!
 		
@@ -442,11 +443,14 @@ function drawScene() {
 	
 	mvMatrix = translationMatrix( 0, 0, globalTz );
 			
-	// Instantianting all scene models
-	// TODO recursively draw each model
 	scenegraph.updateGlobalMatrix();
+
+	// use graphnodes-array to make sure everything gets drawn
 	graphnodes.forEach(node => {
-		drawModel(node.model,mvMatrix, primitiveType);
+		if(node.isSelected)
+			drawModel(node.model,mvMatrix, gl.LINE_LOOP);
+		else
+			drawModel(node.model,mvMatrix, primitiveType);
 	});
 			   
 }
@@ -469,7 +473,8 @@ function animate() {
 		var elapsed = timeNow - lastTime;
 		
 		// Global rotation
-		
+		// TODO: Translation, Scaling
+
 		if( globalRotationYY_ON ) {
 
 			globalAngleYY += globalRotationYY_DIR * globalRotationYY_SPEED * (90 * elapsed) / 1000.0;
@@ -479,9 +484,6 @@ function animate() {
 		graphnodes.forEach(node => {
 			node.model.rotateLocal(elapsed);
 		});
-		// scenegraph.children.forEach(child => {
-		// 	child.model.rotateLocal(elapsed);
-		// });
 
 	}
 	
@@ -514,58 +516,34 @@ function outputInfos(){
     
 }
 
+
 //----------------------------------------------------------------------------
 
 function setEventListeners(){
 	
-	// File loading
-	
-	// Adapted from:
-	
-	// http://stackoverflow.com/questions/23331546/how-to-use-javascript-to-read-local-text-file-and-read-line-by-line
-	
-	// document.getElementById("file").onchange = readFile;
+	// arrow up / down to select node
 
-    // Dropdown list
+	document.addEventListener('keydown',  (event) => {
+		const keyName = event.key;
 	
-	var animation = document.getElementById("animation-selection");
-	
-	animation.addEventListener("click", function(){
-				
-		// Getting the selection
-		
-		var p = animation.selectedIndex;
-		//TODO:  Based on the selection, show the corresponding form
-	
-		switch(p){
-			
-			case 0 : 
-				break;
-			
-			case 1 : 
-				break;
-
-			case 2 : 
-				break;
-		}  	
-	});  
-	
+		if (keyName === 'ArrowUp') {
+			selectNextNode();
+			// TODO Do stuff
+		}
+		if (keyName === 'ArrowDown') {
+			selectPreviousNode();
+		}
+	});
 	
     // Dropdown list
 	
 	var projection = document.getElementById("projection-selection");
-	
-	projection.addEventListener("click", function(){
-				
+	projection.addEventListener("click", function(){		
 		// Getting the selection
-		
-		var p = projection.selectedIndex;
-				
-		switch(p){
-			
+		var p = projection.selectedIndex;		
+		switch(p){	
 			case 0 : projectionType = 0;
 				break;
-			
 			case 1 : projectionType = 1;
 				break;
 		}  	
@@ -574,29 +552,19 @@ function setEventListeners(){
 	// Dropdown list
 	
 	var list = document.getElementById("rendering-mode-selection");
-	
 	list.addEventListener("click", function(){
-				
 		// Getting the selection
-		
-		var mode = list.selectedIndex;
-				
+		var mode = list.selectedIndex;		
 		switch(mode){
-			
-			case 0 : primitiveType = gl.TRIANGLES;
-				break;
-			
-			case 1 : primitiveType = gl.LINE_LOOP;
-				break;
-			
-			case 2 : primitiveType = gl.POINTS;
-				break;
+			case 0 : primitiveType = gl.TRIANGLES; break;
+			case 1 : primitiveType = gl.LINE_LOOP; break;
+			case 2 : primitiveType = gl.POINTS; break;
 		}
 	});      
-
+//TODO: remove / replace with new models
 	// Button events
 	document.getElementById("cube-button").onclick = function(){
-		var x = Math.random()*2-1;
+		var x = Math.random()*10-5;
 		var y = Math.random()*2-1; 
 		var z = 0;
 		var scale = Math.random();
@@ -605,7 +573,8 @@ function setEventListeners(){
 		c.setScale(factor=scale);
 		var n = new GraphNode(c);
 		n.setParent(scenegraph);
-		graphnodes.push(n); 	
+		graphnodes.push(n); 
+		selectLastNode();	
 		// TODO does JS use references? are graphnodes & scenegraph objects the same? if not, how do i update the right element in the scenegraph?
 		console.log(scenegraph.print("", true));
 		// sceneModels.push(c);
@@ -613,7 +582,7 @@ function setEventListeners(){
 
 	// Button events
 	document.getElementById("tetraeder-button").onclick = function(){
-		var x = Math.random()*2-1;
+		var x = Math.random()*10-5;
 		var y = Math.random()*2-1;
 		var z = 0;
 		var scale = Math.random();
@@ -624,13 +593,14 @@ function setEventListeners(){
 		var n = new GraphNode(t);
 		n.setParent(scenegraph);
 		graphnodes.push(n);
+		selectLastNode();	
 		console.log(scenegraph.print("", true));
 		// sceneModels.push(t);
 	};
 
 	// // Button events
 	document.getElementById("add-to-base-button").onclick = function(){
-		var x = Math.random()*2-1;
+		var x = Math.random()*10-5;
 		var y = Math.random()*2-1; 
 		var z = 0;
 		var scale = Math.random();
@@ -647,14 +617,16 @@ function setEventListeners(){
 		var n = new GraphNode(c);
 		n.setParent(scenegraph);
 		graphnodes.push(n);
+		selectLastNode();	
 
 		console.log(scenegraph.print("", true));
 		// sceneModels.push(c);
 	};
 
+	//TODO add to selected
 	// // Button events
 	document.getElementById("add-to-last-button").onclick = function(){
-		var x = Math.random()*2-1;
+		var x = Math.random()*10-5;
 		var y = Math.random()*2-1; 
 		var z = 0;
 		var scale = Math.random();
@@ -671,126 +643,13 @@ function setEventListeners(){
 		var n = new GraphNode(c);
 		n.setParent(graphnodes[graphnodes.length-1]);
 		graphnodes.push(n);
+		selectLastNode();	
 
 		console.log(scenegraph.print("", true));
 		// sceneModels.push(c);
 	};
 
 	
-
-	document.getElementById("XX-on-off-button").onclick = function(){
-		
-		// Switching on / off
-		
-		if( rotationXX_ON ) {
-			
-			rotationXX_ON = 0;
-		}
-		else {
-			
-			rotationXX_ON = 1;
-		}  
-	};
-
-	document.getElementById("XX-direction-button").onclick = function(){
-		
-		// Switching the direction
-		
-		if( rotationXX_DIR == 1 ) {
-			
-			rotationXX_DIR = -1;
-		}
-		else {
-			
-			rotationXX_DIR = 1;
-		}  
-	};      
-
-	document.getElementById("XX-slower-button").onclick = function(){
-		
-		rotationXX_SPEED *= 0.75;  
-	};      
-
-	document.getElementById("XX-faster-button").onclick = function(){
-		
-		rotationXX_SPEED *= 1.25;  
-	};      
-
-	document.getElementById("YY-on-off-button").onclick = function(){
-		
-		// Switching on / off
-		
-		if( rotationYY_ON ) {
-			
-			rotationYY_ON = 0;
-		}
-		else {
-			
-			rotationYY_ON = 1;
-		}  
-	};
-
-	document.getElementById("YY-direction-button").onclick = function(){
-		
-		// Switching the direction
-		
-		if( rotationYY_DIR == 1 ) {
-			
-			rotationYY_DIR = -1;
-		}
-		else {
-			
-			rotationYY_DIR = 1;
-		}  
-	};      
-
-	document.getElementById("YY-slower-button").onclick = function(){
-		
-		rotationYY_SPEED *= 0.75;  
-	};      
-
-	document.getElementById("YY-faster-button").onclick = function(){
-		
-		rotationYY_SPEED *= 1.25;  
-	};      
-
-	document.getElementById("ZZ-on-off-button").onclick = function(){
-		
-		// Switching on / off
-		
-		if( rotationZZ_ON ) {
-			
-			rotationZZ_ON = 0;
-		}
-		else {
-			
-			rotationZZ_ON = 1;
-		}  
-	};
-
-	document.getElementById("ZZ-direction-button").onclick = function(){
-		
-		// Switching the direction
-		
-		if( rotationZZ_DIR == 1 ) {
-			
-			rotationZZ_DIR = -1;
-		}
-		else {
-			
-			rotationZZ_DIR = 1;
-		}  
-	};      
-
-	document.getElementById("ZZ-slower-button").onclick = function(){
-		
-		rotationZZ_SPEED *= 0.75;  
-	};      
-
-	document.getElementById("ZZ-faster-button").onclick = function(){
-		
-		rotationZZ_SPEED *= 1.25;  
-	};      
 
 	document.getElementById("reset-button").onclick = function(){
 		
@@ -894,10 +753,12 @@ function setEventListeners(){
 		// node.model.setRotationYY(0,0,0)
 		// node.model.setRotationZZ(0,0,0)
 		node.model.setRotationXX(x_a,x_s,x_d)
-		node.model.setRotationYY(y_a,y_s,y_d)
-		node.model.setRotationZZ(z_a,z_s,z_d)
+		// node.model.setRotationYY(y_a,y_s,y_d)
+		// node.model.setRotationZZ(z_a,z_s,z_d)
 		graphnodes.push(node);
-	};      
+	};   
+	
+	// TODO fix rotation
 		// rotation direction
 	var direction = document.getElementById("direction-selection");
 	direction.addEventListener("click", function(){
@@ -931,6 +792,7 @@ function setEventListeners(){
 
 
 // not used rn
+/// Deprecated
 function readFile(){
 		
 	var file = this.files[0];
@@ -1053,8 +915,8 @@ function runWebGL() {
 
 	shaderProgram = initShaders( gl );
 	
-	setEventListeners();
-	
+	setEventListeners(canvas);
+
 	
 	tick();		// A timer controls the rendering / animation    
 

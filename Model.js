@@ -1,42 +1,65 @@
 
-var sceneModels = []; // IMPORTANT: global Array containing all Models
 
+// TODO: add ModelFactory for easy setup
 class Model {
 
     constructor() {
         this.vertices = [];
         this.normals = []; // TODO: will be added later for illumination computation
     
-
-        this.translation = {x: 0, y: 0, z: 0};
-
+        this.translation = {
+            origin: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            current: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            destination: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            speed: 1,
+            direction: 1,
+            enabled: false
+        }
         this.rotation = {
             XX: {
                 on: false,
                 angle: 0,
-                speed: 0,
-                dir: 0
+                speed: 1,
+                dir: 1
             },
             YY: {
                 on: false,
                 angle: 0,
-                speed: 0,
-                dir: 0
+                speed: 1,
+                dir: 1
             },
             ZZ: {
                 on: false,
                 angle: 0,
-                speed: 0,
-                dir: 0
+                speed: 1,
+                dir: 1
             }};
         this.scale = {x: 1, y: 1, z: 1};
-     } // todo: interface  / abstract class ?
+     } 
     
     toString(){ return "Model";} 
-    setTranslation(x,y,z) { 
-        this.translation.x = x;
-        this.translation.y = y;
-        this.translation.z = z;
+
+    setTranslationDestination(x,y,z) { 
+        this.translation.destination.x = x;
+        this.translation.destination.y = y;
+        this.translation.destination.z = z;
+    }
+    setTranslationOrigin(x,y,z) { 
+        this.translation.origin.x = this.translation.current.x =  x;
+        this.translation.origin.y = this.translation.current.y = y;
+        this.translation.origin.z = this.translation.current.z = z;
     }
     
     setRotationXX(angle, speed, dir) { 
@@ -74,15 +97,16 @@ class Model {
         this.scale.x = this.scale.y = this.scale.z = factor;
     }
     
-    // TODO ? not used right now
     getMatrix(mvMatrix){
         var matrix;
         if(!mvMatrix)
             matrix = mat4();
         else
             matrix = mvMatrix;
-        // order? where did i get this? is this right?...
-        matrix = mult( matrix, translationMatrix( this.translation.x, this.translation.y, this.translation.z ) );
+        
+        // TRS
+
+        matrix = mult( matrix, translationMatrix( this.translation.current.x, this.translation.current.y, this.translation.current.z ) );
 						 
         matrix = mult( matrix, rotationZZMatrix( this.rotation.ZZ.angle ) );
         
@@ -90,12 +114,7 @@ class Model {
         
         matrix = mult( matrix, rotationXXMatrix( this.rotation.XX.angle ) );
         matrix = mult( matrix, scalingMatrix( this.scale.x, this.scale.y, this.scale.z ) );
-    
-        // matrix = mult(rotationZZMatrix(this.rotation.ZZ.angle), 
-        //                 scalingMatrix(this.scale.x, this.scale.y, this.scale.z));
-        // matrix = mult(rotationYYMatrix(this.rotation.YY.angle), mvMatrix);
-        // matrix = mult(rotationXXMatrix(this.rotation.XX.angle), mvMatrix);
-        // matrix = mult(translationMatrix(this.translation.x, this.translation.y, this.translation.z), mvMatrix);    
+
         return matrix;
     }
     
@@ -103,7 +122,7 @@ class Model {
         this.vertices = array;
     }
 
-    rotateLocal(elapsedTime){
+    rotate(elapsedTime){
         if( this.rotation.XX.on )
             this.rotation.XX.angle += this.rotation.XX.dir * this.rotation.XX.speed * (90 * elapsedTime) / 1000.0;
         if( this.rotation.YY.on )
@@ -111,7 +130,35 @@ class Model {
         if( this.rotation.ZZ.on )
             this.rotation.ZZ.angle += this.rotation.ZZ.dir * this.rotation.ZZ.speed * (90 * elapsedTime) / 1000.0;
     }
- 
+
+    toggleTranslationAnimation() { this.translation.enabled = !this.translation.enabled; }
+    
+    translate(elapsedTime){
+        var x_dir, y_dir, z_dir;
+        x_dir = y_dir = z_dir = 1;
+        var error = 0.01;
+        if(this.translation.enabled){
+            // if destination was reached, turn back
+            if( Math.abs(this.translation.destination.x - this.translation.current.x) < error && 
+                Math.abs(this.translation.destination.y - this.translation.current.y) < error && 
+                Math.abs(this.translation.destination.z - this.translation.current.z) < error )
+                {
+                    var dest = this.translation.destination;
+                    this.translation.destination = this.translation.origin;
+                    this.translation.origin = dest;
+                }
+
+            (this.translation.destination.x - this.translation.current.x)>0 ? x_dir = 1 : x_dir = -1;
+            (this.translation.destination.y - this.translation.current.y)>0 ? y_dir = 1 : y_dir = -1;
+            (this.translation.destination.z - this.translation.current.z)>0 ? z_dir = 1 : z_dir = -1;
+    
+            this.translation.current.x += x_dir * this.translation.speed * (90 * elapsedTime) / 1000.0; 
+            this.translation.current.y += y_dir * this.translation.speed * (90 * elapsedTime) / 1000.0; 
+            this.translation.current.z += z_dir * this.translation.speed * (90 * elapsedTime) / 1000.0;     
+        }
+
+    }
+    
   }
   
   class Cube extends Model {
@@ -182,14 +229,3 @@ class Model {
     toString(){ return "Tetrahedron";} 
 
 }
-
-// IMPORTANT - add Models to global Array
-
-// Model 0 --- Top Left
-
-// var c = new Cube();
-// c.setTranslation(-0.5, 0.5, 0);
-// c.setScale(0.5,0.5,0.5);
-// sceneModels.push(c);
-// sceneModels.push(new Tetrahedron());
-// sceneModels[1].setScale(factor=0.25);

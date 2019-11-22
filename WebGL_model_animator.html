@@ -121,14 +121,26 @@ Passing the Model-View Matrix and the Projection Matrix.
 		
 		<p>Model animation using rotations</p>
 		
-		<canvas id="my-canvas" style="border:1px solid #000000;" width="350" height="350"></canvas>
+		<canvas id="my-canvas" style="border:1px solid #000000;" width="1050" height="350"></canvas>
 
 		<!-- TODO: instead of that, the Professor recommended just making a few classes for the models and re-use them (OOP) -->
 		<!-- <p>Read a 3D model from a text file:
 				<input type="file" id="file" name="file">	
 		</p> -->
 
-		<p>Add a model: 
+		<p> Add a empty Node:
+			<button id="node-to-root-button">to root</button>
+			<button id="node-to-selected-button">to selected model</button>
+		</p>
+		<p> Add a Cube:
+			<button id="cube-to-root-button">to root</button>
+			<button id="cube-to-selected-button">to selected model</button>
+		</p>
+		<p> Add a Tetrahedron:
+			<button id="tetrahedron-to-root-button">to root</button>
+			<button id="tetrahedron-to-selected-button">to selected model</button>
+		</p>
+		<!-- <p>Add a model: 
 			
 				<button id="cube-button">+ Cube</button>
 		
@@ -137,7 +149,7 @@ Passing the Model-View Matrix and the Projection Matrix.
 				<button id="add-to-base-button">+ SceneGraph</button>
 				<button id="add-to-last-button">+ Last</button>
 		
-		</p>
+		</p> -->
 		
 			
 		<p>Add an <b>animation</b>:
@@ -230,41 +242,6 @@ TODO: needs a "FormHandler" that takes care of the input values
 			<input type="submit" name="sp_submit" value="Submit">
 		</form>
 
-		<p>XX rotation: 
-			
-		<button id="XX-on-off-button">On / Off</button>
-
-	    <button id="XX-direction-button">Change Direction</button>
-
-	    <button id="XX-slower-button">Slower</button>
-
-	    <button id="XX-faster-button">Faster</button>
-
-		</p>
-		
-		<p>YY rotation: 
-			
-		<button id="YY-on-off-button">On / Off</button>
-
-	    <button id="YY-direction-button">Change Direction</button>
-
-	    <button id="YY-slower-button">Slower</button>
-
-	    <button id="YY-faster-button">Faster</button>
-
-		</p>
-		
-		<p>ZZ rotation: 
-			
-		<button id="ZZ-on-off-button">On / Off</button>
-
-	    <button id="ZZ-direction-button">Change Direction</button>
-
-	    <button id="ZZ-slower-button">Slower</button>
-
-	    <button id="ZZ-faster-button">Faster</button>
-
-		</p>
 		
 		<p>Choose the <b>projection type</b>:
 		
@@ -282,8 +259,6 @@ TODO: needs a "FormHandler" that takes care of the input values
 			<option value="1">Wireframe</option>
 			<option value="2">Vertices</option>
         </select>
-        
-
 		
         <p>
 		

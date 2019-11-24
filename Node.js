@@ -133,51 +133,51 @@ var scenegraph = new GraphNode();
 
 // --       Rotation Test   "Solar System"
 
-// var sunNode = new GraphNode(new Cube());
-// var t = new Tetrahedron();
-// t.setScale(0.75);
-// var earthNode = new GraphNode(t);
+var sunNode = new GraphNode(new Cube());
+var t = new Tetrahedron();
+t.setScale(0.75);
+var earthNode = new GraphNode(t);
 
-// var t2 = new Tetrahedron();
-// t2.setScale(0.5);
-// var moonNode = new GraphNode(t2);
+var t2 = new Tetrahedron();
+t2.setScale(0.5);
+var moonNode = new GraphNode(t2);
 
-// var solarSystemNode = new GraphNode();
-// solarSystemNode.model.setRotationZZ(0,0.25,-1);
-// solarSystemNode.model.toggleRotationZZ();
+var solarSystemNode = new GraphNode();
+solarSystemNode.model.setRotationZZ(0,0.25,-1);
+solarSystemNode.model.toggleRotationZZ();
 
 
-// var earthOrbitNode = new GraphNode();
-// earthOrbitNode.model.setTranslationOrigin(2,0,0);
-// earthOrbitNode.model.setRotationZZ(0,0.5,-1);
-// earthOrbitNode.model.toggleRotationZZ();
+var earthOrbitNode = new GraphNode();
+earthOrbitNode.model.setTranslationOrigin(2,0,0);
+earthOrbitNode.model.setRotationZZ(0,0.5,-1);
+earthOrbitNode.model.toggleRotationZZ();
 
-// var moonOrbitNode = new GraphNode();
-// moonOrbitNode.model.setTranslationOrigin(1,0,0);
+var moonOrbitNode = new GraphNode();
+moonOrbitNode.model.setTranslationOrigin(1,0,0);
 
-// solarSystemNode.setParent(scenegraph);
-// sunNode.setParent(solarSystemNode);
-// earthOrbitNode.setParent(solarSystemNode);
-// moonOrbitNode.setParent(earthOrbitNode);
-// earthNode.setParent(earthOrbitNode);
-// moonNode.setParent(moonOrbitNode);
+solarSystemNode.setParent(scenegraph);
+sunNode.setParent(solarSystemNode);
+earthOrbitNode.setParent(solarSystemNode);
+moonOrbitNode.setParent(earthOrbitNode);
+earthNode.setParent(earthOrbitNode);
+moonNode.setParent(moonOrbitNode);
 
-// graphnodes.push(solarSystemNode);
-// graphnodes.push(earthOrbitNode);
-// graphnodes.push(sunNode);
-// graphnodes.push(earthNode);
-// graphnodes.push(moonNode);
-// graphnodes.push(moonOrbitNode);
+graphnodes.push(solarSystemNode);
+graphnodes.push(earthOrbitNode);
+graphnodes.push(sunNode);
+graphnodes.push(earthNode);
+graphnodes.push(moonNode);
+graphnodes.push(moonOrbitNode);
 
 //  ---     Translation Test
 
-var transTest = new GraphNode(new Cube());
-transTest.model.setTranslationDestination(1,1,0);
-transTest.model.translation.speed = 0.01;
-transTest.model.toggleTranslationAnimation();
-transTest.model.setRotationYY(0,0.5,1);
-transTest.model.toggleRotationYY();
-transTest.model.setRotationXX(0,0.5,1);
-transTest.model.toggleRotationXX();
-transTest.setParent(scenegraph);
-graphnodes.push(transTest);
+// var transTest = new GraphNode(new Cube());
+// transTest.model.setTranslationDestination(1,1,0);
+// transTest.model.translation.speed = 0.01;
+// transTest.model.toggleTranslationAnimation();
+// transTest.model.setRotationYY(0,0.5,1);
+// transTest.model.toggleRotationYY();
+// transTest.model.setRotationXX(0,0.5,1);
+// transTest.model.toggleRotationXX();
+// transTest.setParent(scenegraph);
+// graphnodes.push(transTest);

@@ -522,11 +522,11 @@ function setEventListeners(){
 	document.addEventListener('keydown',  (event) => {
 		const keyName = event.key;
 	
-		if (keyName === 'ArrowUp') {
+		if (keyName === 'ArrowRight') {
 			selectNextNode();
 			// TODO Do stuff
 		}
-		if (keyName === 'ArrowDown') {
+		if (keyName === 'ArrowLeft') {
 			selectPreviousNode();
 		}
 	});

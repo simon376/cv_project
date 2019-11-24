@@ -663,6 +663,7 @@ function setEventListeners(){
 		}
 	};
 	
+
 	//	Translation
 	document.getElementById("t_submit").onclick = function(){
 		
@@ -675,9 +676,14 @@ function setEventListeners(){
 		var logmsg = "translation from: (" + o_x + "|" + o_y + "|" + o_z
 						+ ") to (" + d_x + "|" + d_y + "|" + d_z + ")";
 		console.log(logmsg);
-		var node = graphnodes.pop();
-		node.model.setTranslation(d_x,d_y,d_z);
-		graphnodes.push(node);
+		var selectedNode = getSelected();
+		if(selectedNode){
+			selectedNode.model.setTranslationOrigin(o_x,o_y,o_z);
+			selectedNode.model.setTranslationDestination(d_x,d_y,d_z);
+		}
+		// var node = graphnodes.pop();
+		// node.model.setTranslation(d_x,d_y,d_z);
+		// graphnodes.push(node);
 
 	};      
 
@@ -741,7 +747,7 @@ function addModel(model, parent){
     var y = Math.random()*2-1; 
     var z = 0; 
     var scale = Math.random();
-    model.setTranslation(x,y,z);
+    model.setTranslationOrigin(x,y,z);
     model.setScale(factor=scale);
     model.setRotationXX(0.0,1.0,1);
     model.setRotationYY(0.0,1.0,-1);

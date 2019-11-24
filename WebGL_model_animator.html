@@ -144,7 +144,6 @@ Passing the Model-View Matrix and the Projection Matrix.
 					<option value="translation">Translation</option>
 					<option value="rotation">Rotation</option>
 					<option value="scale">Scale</option>
-					<option value="speed">Speed</option>
 				</select>
 			</form>
 		
@@ -162,6 +161,10 @@ Passing the Model-View Matrix and the Projection Matrix.
 			  Y:	<input type="text" id="t_dest_y" value="0"><br>
 			  Z:	<input type="text" id="t_dest_z" value="0"><br>
 			</fieldset>
+			<fieldset style="width: 50%; margin: 0px auto">
+			  <legend>Animation speed: (0 = no Animation)</legend>
+			  		<input type="text" id="t_speed" value="0.01"> x<br>
+			</fieldset>
 			<button type="button" id="t_submit">Add Translation</button>
 		</form>
 
@@ -173,29 +176,15 @@ Passing the Model-View Matrix and the Projection Matrix.
 					<option value="1">local rotation</option>
 			</select>
 
-					<!-- <legend>Rotation around:</legend>
-					<input type="radio" id="rotate_around" value="itself" checked> itself<br>
-					<input type="radio" id="rotate_around" value="third-party"> third-party<br> -->
-
-					<fieldset>
-						<legend>Rotate in deg:</legend>
-						XX(angle/speed/dir):	<input type="text" id="xx_angle" value="0"> 	<input type="text" id="xx_speed" value="1.0"> 	<input type="text" id="xx_dir" value="1"><br>
-						YY(angle/speed/dir):	<input type="text" id="yy_angle" value="0"> 	<input type="text" id="yy_speed" value="1.0"> 	<input type="text" id="yy_dir" value="-1"><br>
-						ZZ(angle/speed/dir):	<input type="text" id="zz_angle" value="0"> 	<input type="text" id="zz_speed" value="1.0"> 	<input type="text" id="zz_dir" value="1"><br>
-					</fieldset>
+				<fieldset>
+					<legend>Rotate in deg:</legend>
+					XX(angle/speed/dir):	<input type="text" id="xx_angle" value="0"> 	<input type="text" id="xx_speed" value="1.0"> 	<input type="text" id="xx_dir" value="1"><br>
+					YY(angle/speed/dir):	<input type="text" id="yy_angle" value="0"> 	<input type="text" id="yy_speed" value="1.0"> 	<input type="text" id="yy_dir" value="-1"><br>
+					ZZ(angle/speed/dir):	<input type="text" id="zz_angle" value="0"> 	<input type="text" id="zz_speed" value="1.0"> 	<input type="text" id="zz_dir" value="1"><br>
+				</fieldset>
 			  
 			</fieldset>
 	  
-			<fieldset style="width: 50%; margin: 0px auto">
-			<select id="direction-selection">
-					<option value="0">CCW</option>
-					<option value="1">CW</option>
-			</select>
-	
-			  <!-- <legend>Rotation direction:</legend>
-			  <input type="radio" id="direction" value="CCW" checked> CCW<br>
-			  <input type="radio" id="direction" value="CW"> CW<br> -->
-			</fieldset>
 			<button type="button" id="r_submit">Add Rotation</button>
 		</form>
 
@@ -203,18 +192,14 @@ Passing the Model-View Matrix and the Projection Matrix.
 			<h2>Scaling</h2>
 			<fieldset style="width: 50%; margin: 0px auto">
 			  <legend>Scale:</legend>
-			  Factor:	<input type="text" name="scaling" value="0"> x<br>
+			  Factor:	<input type="text" id="scaling" value="1"> x<br>
 			</fieldset>
-			<button type="button" id="sc_submit">Add scale</button>
-		</form>
-
-		<form name="speed" id="speed" style="display: none">
-			<h2>Speed</h2>
 			<fieldset style="width: 50%; margin: 0px auto">
-			  <legend>Animation Speed:</legend>
-			  <input type="text" name="speed" value="1"> x<br>
+				<legend>Animation speed: (0 = no Animation)</legend>
+						<input type="text" id="s_speed" value="0.01"> x<br>
 			</fieldset>
-			<input type="submit" name="sp_submit" value="Submit">
+  
+			<button type="button" id="sc_submit">Add scale</button>
 		</form>
 
 		

@@ -713,21 +713,7 @@ function setEventListeners(){
 		console.log(logmsg);
 	};   
 	
-	// TODO fix rotation
-		// rotation direction
-	var direction = document.getElementById("direction-selection");
-	direction.addEventListener("click", function(){
-		// Getting the selection
-		var p = direction.selectedIndex;
-				// TODO: change rotation direction of last selected node	
-		switch(p){
-			case 0 : 
-				break;
-			
-			case 1 : 
-				break;
-		}  	
-	});  
+
 	var rotation = document.getElementById("transformation-selection");
 	rotation.addEventListener("click", function(){
 		// Getting the selection
@@ -743,10 +729,14 @@ function setEventListeners(){
 
 	//Scaling
 	document.getElementById("sc_submit").onclick = function () {
-		var factor = document.getElementById("scaling").value;
-		var node = graphnodes.pop();
-		node.model.setScale(factor);
-		graphnodes.push(node);
+		var factor = parseFloat(document.getElementById("scaling").value);
+		var speed = parseFloat(document.getElementById("s_speed").value);	//TODO: use for animation
+
+		var selectedNode = getSelected();
+		if(selectedNode){
+			selectedNode.model.setScale(factor);
+		}
+
 
 	};
 	

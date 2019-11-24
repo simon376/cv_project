@@ -132,6 +132,10 @@ class Model {
         this.vertices = array;
     }
 
+    scale(elapsedTime){
+        //TODO animate scaling
+    }
+
     rotate(elapsedTime){
         if( this.rotation.XX.on )
             this.rotation.XX.angle += this.rotation.XX.dir * this.rotation.XX.speed * (90 * elapsedTime) / 1000.0;

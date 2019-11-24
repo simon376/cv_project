@@ -739,7 +739,16 @@ function setEventListeners(){
 			case 1 : 
 				break;
 		}  	
-	});  
+	});
+
+	//Scaling
+	document.getElementById("sc_submit").onclick = function () {
+		var factor = document.getElementById("scaling").value;
+		var node = graphnodes.pop();
+		node.model.setScale(factor);
+		graphnodes.push(node);
+
+	};
 	
 
 }

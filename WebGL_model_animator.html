@@ -144,18 +144,19 @@ Passing the Model-View Matrix and the Projection Matrix.
 					<option value="translation">Translation</option>
 					<option value="rotation">Rotation</option>
 					<option value="scale">Scale</option>
+					<option value="speed">Speed</option>
 				</select>
 			</form>
 		
 		<form name="translation" id="translation" style = "display: none">
 			<h2>Translation</h2>
-			<fieldset>
+			<fieldset style="width: 50%; margin: 0px auto">
 			  <legend>Translate from:</legend>
 			  X:	<input type="text" id="t_orig_x" value="0"><br>
 			  Y:	<input type="text" id="t_orig_y" value="0"><br>
 			  Z:	<input type="text" id="t_orig_z" value="0"><br>
 			</fieldset>
-			<fieldset>
+			<fieldset style="width: 50%; margin: 0px auto">
 			  <legend>Translate to:</legend>
 			  X:	<input type="text" id="t_dest_x" value="0"><br>
 			  Y:	<input type="text" id="t_dest_y" value="0"><br>
@@ -166,7 +167,7 @@ Passing the Model-View Matrix and the Projection Matrix.
 
 		<form name="rotation" id="rotation" style="display: none">
 			<h2>Rotation</h2>
-			<fieldset>
+			<fieldset style="width: 50%; margin: 0px auto">
 			<select id="transformation-selection">
 					<option value="0">global rotation</option>
 					<option value="1">local rotation</option>
@@ -175,6 +176,7 @@ Passing the Model-View Matrix and the Projection Matrix.
 					<!-- <legend>Rotation around:</legend>
 					<input type="radio" id="rotate_around" value="itself" checked> itself<br>
 					<input type="radio" id="rotate_around" value="third-party"> third-party<br> -->
+
 					<fieldset>
 						<legend>Rotate in deg:</legend>
 						XX(angle/speed/dir):	<input type="text" id="xx_angle" value="0"> 	<input type="text" id="xx_speed" value="1.0"> 	<input type="text" id="xx_dir" value="1"><br>
@@ -184,7 +186,7 @@ Passing the Model-View Matrix and the Projection Matrix.
 			  
 			</fieldset>
 	  
-			<fieldset>
+			<fieldset style="width: 50%; margin: 0px auto">
 			<select id="direction-selection">
 					<option value="0">CCW</option>
 					<option value="1">CW</option>
@@ -199,16 +201,16 @@ Passing the Model-View Matrix and the Projection Matrix.
 
 		<form name="scale" id="scale" style="display: none">
 			<h2>Scaling</h2>
-			<fieldset>
+			<fieldset style="width: 50%; margin: 0px auto">
 			  <legend>Scale:</legend>
 			  Factor:	<input type="text" name="scaling" value="0"> x<br>
 			</fieldset>
-			<input type="submit" name="sc_submit" value="Submit">
+			<button type="button" id="sc_submit">Add scale</button>
 		</form>
 
-		<form>
+		<form name="speed" id="speed" style="display: none">
 			<h2>Speed</h2>
-			<fieldset>
+			<fieldset style="width: 50%; margin: 0px auto">
 			  <legend>Animation Speed:</legend>
 			  <input type="text" name="speed" value="1"> x<br>
 			</fieldset>

@@ -333,28 +333,24 @@ function initBuffers(model) {
 
 //  Drawing the model
 
-function drawModel( model,
+function drawModel( node,
 					mvMatrix,
 					primitiveType ) {
 
-    // Pay attention to transformation order !!
-	mvMatrix = mult( mvMatrix, translationMatrix( model.translation.x, model.translation.y, model.translation.z ) );
-						 
-	mvMatrix = mult( mvMatrix, rotationZZMatrix( model.rotation.ZZ.angle ) );
-	
-	mvMatrix = mult( mvMatrix, rotationYYMatrix( model.rotation.YY.angle ) );
-	
-	mvMatrix = mult( mvMatrix, rotationXXMatrix( model.rotation.XX.angle ) );
-	mvMatrix = mult( mvMatrix, scalingMatrix( model.scale.x, model.scale.y, model.scale.z ) );
+	var localMatrix = node.model.getMatrix(mvMatrix);
+	var matrix = mult( node.globalMatrix, localMatrix ); // not sure if this is the correct order
+	// this should add the global mvMatrix and the local transformations.. should..
 						 
 	// Passing the Model View Matrix to apply the current transformation
 	
 	var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
 	
-	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(mvMatrix)));
+	gl.uniformMatrix4fv(mvUniform, false, new Float32Array(flatten(matrix)));
 	
+	if(!node.model)
+		return;					
+	initBuffers(node.model);
 
-	initBuffers(model);
 
 	// Drawing the contents of the vertex buffer
 	
@@ -401,8 +397,8 @@ function drawScene() {
 	if( projectionType == 0 ) {
 		
 		// For now, the default orthogonal view volume
-		
-		pMatrix = ortho( -1.0, 1.0, -1.0, 1.0, -1.0, 1.0 );
+		// change the view volume perspective matrix
+		pMatrix = ortho( -6.0, 6.0, -2.0, 2.0, -2.0, 15.0 );
 		
 		// Global transformation !!
 		
@@ -420,7 +416,7 @@ function drawScene() {
 		
 		// Ensure that the model is "inside" the view volume
 		
-		pMatrix = perspective( 45, 1, 0.05, 15 );
+		pMatrix = perspective( 45, 3, 0.05, 15 );
 		
 		// Global transformation !!
 		
@@ -440,15 +436,17 @@ function drawScene() {
 	// GLOBAL TRANSFORMATION FOR THE WHOLE SCENE
 	
 	mvMatrix = translationMatrix( 0, 0, globalTz );
-			
-	// Instantianting all scene models
-	// sceneModels is the global array defined in Model.js
-	for(var i = 0; i < sceneModels.length; i++ )
-	{ 
-		drawModel( sceneModels[i],
-			   mvMatrix,
-	           primitiveType );
-	}
+	
+	// here, update the whole scenegraph and apply global transformation matrixes
+	scenegraph.updateGlobalMatrix(mvMatrix);	
+
+	// use graphnodes-array to make sure everything gets drawn
+	graphnodes.forEach(node => {
+		if(node.isSelected)
+			drawModel(node,mvMatrix, gl.LINE_LOOP);
+		else
+			drawModel(node,mvMatrix, primitiveType);
+	});
 			   
 }
 
@@ -470,29 +468,18 @@ function animate() {
 		var elapsed = timeNow - lastTime;
 		
 		// Global rotation
-		
+
 		if( globalRotationYY_ON ) {
 
 			globalAngleYY += globalRotationYY_DIR * globalRotationYY_SPEED * (90 * elapsed) / 1000.0;
 	    }
 
-		// Local rotations
-
-		for(var i = 0; i < sceneModels.length; i++ )
-	    {
-			if( sceneModels[i].rotation.XX.on ) {
-
-				sceneModels[i].rotation.XX.angle += sceneModels[i].rotation.XX.dir * sceneModels[i].rotation.XX.speed * (90 * elapsed) / 1000.0;
-			}
-			if( sceneModels[i].rotation.YY.on ) {
-
-				sceneModels[i].rotation.YY.angle += sceneModels[i].rotation.YY.dir * sceneModels[i].rotation.YY.speed * (90 * elapsed) / 1000.0;
-			}
-			if( sceneModels[i].rotation.ZZ.on ) {
-
-				sceneModels[i].rotation.ZZ.angle += sceneModels[i].rotation.ZZ.dir * sceneModels[i].rotation.ZZ.speed * (90 * elapsed) / 1000.0;
-			}
-		}
+		// update local transformations 
+		// TODO:  Scaling
+		graphnodes.forEach(node => {
+			node.model.rotate(elapsed);
+			node.model.translate(elapsed);
+		});
 
 	}
 	
@@ -525,58 +512,34 @@ function outputInfos(){
     
 }
 
+
 //----------------------------------------------------------------------------
 
 function setEventListeners(){
 	
-	// File loading
-	
-	// Adapted from:
-	
-	// http://stackoverflow.com/questions/23331546/how-to-use-javascript-to-read-local-text-file-and-read-line-by-line
-	
-	// document.getElementById("file").onchange = readFile;
+	// arrow up / down to select node
 
-    // Dropdown list
+	document.addEventListener('keydown',  (event) => {
+		const keyName = event.key;
 	
-	var animation = document.getElementById("animation-selection");
-	
-	animation.addEventListener("click", function(){
-				
-		// Getting the selection
-		
-		var p = animation.selectedIndex;
-		//TODO:  Based on the selection, show the corresponding form
-	
-		switch(p){
-			
-			case 0 : 
-				break;
-			
-			case 1 : 
-				break;
-
-			case 2 : 
-				break;
-		}  	
-	});  
-	
+		if (keyName === 'ArrowUp') {
+			selectNextNode();
+			// TODO Do stuff
+		}
+		if (keyName === 'ArrowDown') {
+			selectPreviousNode();
+		}
+	});
 	
     // Dropdown list
 	
 	var projection = document.getElementById("projection-selection");
-	
-	projection.addEventListener("click", function(){
-				
+	projection.addEventListener("click", function(){		
 		// Getting the selection
-		
-		var p = projection.selectedIndex;
-				
-		switch(p){
-			
+		var p = projection.selectedIndex;		
+		switch(p){	
 			case 0 : projectionType = 0;
 				break;
-			
 			case 1 : projectionType = 1;
 				break;
 		}  	
@@ -585,183 +548,55 @@ function setEventListeners(){
 	// Dropdown list
 	
 	var list = document.getElementById("rendering-mode-selection");
-	
 	list.addEventListener("click", function(){
-				
 		// Getting the selection
-		
-		var mode = list.selectedIndex;
-				
+		var mode = list.selectedIndex;		
 		switch(mode){
-			
-			case 0 : primitiveType = gl.TRIANGLES;
-				break;
-			
-			case 1 : primitiveType = gl.LINE_LOOP;
-				break;
-			
-			case 2 : primitiveType = gl.POINTS;
-				break;
+			case 0 : primitiveType = gl.TRIANGLES; break;
+			case 1 : primitiveType = gl.LINE_LOOP; break;
+			case 2 : primitiveType = gl.POINTS; break;
 		}
 	});      
 
-	// Button events
-	document.getElementById("cube-button").onclick = function(){
-		var x = Math.random()*2-1;
-		var y = Math.random()*2-1; 
-		var z = 0;
-		var scale = Math.random();
-		var c = new Cube();
-		c.setTranslation(x,y,z);
-		c.setScale(factor=scale);
-		sceneModels.push(c);
-	};
-
-	// Button events
-	document.getElementById("tetraeder-button").onclick = function(){
-		var x = Math.random()*2-1;
-		var y = Math.random()*2-1;
-		var z = 0;
-		var scale = Math.random();
-		var t = new Tetrahedron();
-		t.setTranslation(x,y,z);
-		t.setScale(factor=scale);
-		sceneModels.push(t);
-	};
 
 	// // Button events
-	document.getElementById("rotating-cube-button").onclick = function(){
-		var x = Math.random()*2-1;
-		var y = Math.random()*2-1; 
-		var z = 0;
-		var scale = Math.random();
-		var c = new Cube();
-		c.setTranslation(x,y,z);
-		c.setScale(factor=scale);
-		c.setRotationXX(0.0,1.0,1);
-		c.setRotationYY(0.0,1.0,-1);
-		c.setRotationZZ(0.0,1.0,1);
-		c.toggleRotationXX();
-		c.toggleRotationYY();
-		c.toggleRotationZZ();
-		sceneModels.push(c);
+	document.getElementById("node-to-root-button").onclick = function(){
+		addModel(new Model(), scenegraph);
+	};
+
+	document.getElementById("node-to-selected-button").onclick = function(){
+		var selected = getSelected();
+		if(selected)
+			addModel(new Model(), selected);
+		else
+			addModel(new Model(), scenegraph);
+	};
+
+	document.getElementById("cube-to-root-button").onclick = function(){
+		addModel(new Cube(), scenegraph);
+	};
+
+	document.getElementById("cube-to-selected-button").onclick = function(){
+		var selected = getSelected();
+		if(selected)
+			addModel(new Cube(), selected);
+		else
+			addModel(new Cube(), scenegraph);
+	};
+
+	document.getElementById("tetrahedron-to-root-button").onclick = function(){
+		addModel(new Tetrahedron(), scenegraph);
+	};
+
+	document.getElementById("tetrahedron-to-selected-button").onclick = function(){
+		var selected = getSelected();
+		if(selected)
+			addModel(new Tetrahedron(), selected);
+		else
+			addModel(new Tetrahedron(), scenegraph);
 	};
 
 	
-
-	document.getElementById("XX-on-off-button").onclick = function(){
-		
-		// Switching on / off
-		
-		if( rotationXX_ON ) {
-			
-			rotationXX_ON = 0;
-		}
-		else {
-			
-			rotationXX_ON = 1;
-		}  
-	};
-
-	document.getElementById("XX-direction-button").onclick = function(){
-		
-		// Switching the direction
-		
-		if( rotationXX_DIR == 1 ) {
-			
-			rotationXX_DIR = -1;
-		}
-		else {
-			
-			rotationXX_DIR = 1;
-		}  
-	};      
-
-	document.getElementById("XX-slower-button").onclick = function(){
-		
-		rotationXX_SPEED *= 0.75;  
-	};      
-
-	document.getElementById("XX-faster-button").onclick = function(){
-		
-		rotationXX_SPEED *= 1.25;  
-	};      
-
-	document.getElementById("YY-on-off-button").onclick = function(){
-		
-		// Switching on / off
-		
-		if( rotationYY_ON ) {
-			
-			rotationYY_ON = 0;
-		}
-		else {
-			
-			rotationYY_ON = 1;
-		}  
-	};
-
-	document.getElementById("YY-direction-button").onclick = function(){
-		
-		// Switching the direction
-		
-		if( rotationYY_DIR == 1 ) {
-			
-			rotationYY_DIR = -1;
-		}
-		else {
-			
-			rotationYY_DIR = 1;
-		}  
-	};      
-
-	document.getElementById("YY-slower-button").onclick = function(){
-		
-		rotationYY_SPEED *= 0.75;  
-	};      
-
-	document.getElementById("YY-faster-button").onclick = function(){
-		
-		rotationYY_SPEED *= 1.25;  
-	};      
-
-	document.getElementById("ZZ-on-off-button").onclick = function(){
-		
-		// Switching on / off
-		
-		if( rotationZZ_ON ) {
-			
-			rotationZZ_ON = 0;
-		}
-		else {
-			
-			rotationZZ_ON = 1;
-		}  
-	};
-
-	document.getElementById("ZZ-direction-button").onclick = function(){
-		
-		// Switching the direction
-		
-		if( rotationZZ_DIR == 1 ) {
-			
-			rotationZZ_DIR = -1;
-		}
-		else {
-			
-			rotationZZ_DIR = 1;
-		}  
-	};      
-
-	document.getElementById("ZZ-slower-button").onclick = function(){
-		
-		rotationZZ_SPEED *= 0.75;  
-	};      
-
-	document.getElementById("ZZ-faster-button").onclick = function(){
-		
-		rotationZZ_SPEED *= 1.25;  
-	};      
 
 	document.getElementById("reset-button").onclick = function(){
 		
@@ -826,9 +661,113 @@ function setEventListeners(){
 		{
 			gl.enable( gl.DEPTH_TEST );
 		}
+	};
+	
+
+	//	Translation
+	document.getElementById("t_submit").onclick = function(){
+		
+		var o_x = parseFloat(document.getElementById("t_orig_x").value);
+		var o_y = parseFloat(document.getElementById("t_orig_y").value);
+		var o_z = parseFloat(document.getElementById("t_orig_z").value);
+		var d_x = parseFloat(document.getElementById("t_dest_x").value);
+		var d_y = parseFloat(document.getElementById("t_dest_y").value);
+		var d_z = parseFloat(document.getElementById("t_dest_z").value);
+		var logmsg = "translation from: (" + o_x + "|" + o_y + "|" + o_z
+						+ ") to (" + d_x + "|" + d_y + "|" + d_z + ")";
+		var selectedNode = getSelected();
+		if(selectedNode){
+			selectedNode.model.setTranslationOrigin(o_x,o_y,o_z);
+			selectedNode.model.setTranslationDestination(d_x,d_y,d_z);
+			selectedNode.model.toggleTranslationAnimation(true);
+		}
+
+		console.log(logmsg);
 	};      
+
+	//	Rotation
+	document.getElementById("r_submit").onclick = function(){		
+		var x_a = parseFloat(document.getElementById("xx_angle").value);
+		var x_s = parseFloat(document.getElementById("xx_speed").value);
+		var x_d = parseFloat(document.getElementById("xx_dir").value);
+		var y_a = parseFloat(document.getElementById("yy_angle").value);
+		var y_s = parseFloat(document.getElementById("yy_speed").value);
+		var y_d = parseFloat(document.getElementById("yy_dir").value);
+		var z_a = parseFloat(document.getElementById("zz_angle").value);
+		var z_s = parseFloat(document.getElementById("zz_speed").value);
+		var z_d = parseFloat(document.getElementById("zz_dir").value);
+		var logmsg = "rotation XX (" + x_a + "|" + x_s + "|" + x_d + ")" + 
+					"YY (" + y_a + "|" + y_s + "|" + y_d + ")" + 
+					"ZZ (" + x_a + "|" + x_s + "|" + x_d + ")";
+
+		var selectedNode = getSelected();
+		if(selectedNode){
+			selectedNode.model.setRotationXX(x_a,x_s,x_d)
+			selectedNode.model.setRotationYY(y_a,y_s,y_d)
+			selectedNode.model.setRotationZZ(z_a,z_s,z_d)
+			selectedNode.model.toggleRotationXX(true);
+			selectedNode.model.toggleRotationYY(true);
+			selectedNode.model.toggleRotationZZ(true);
+		}
+
+		console.log(logmsg);
+	};   
+	
+	// TODO fix rotation
+		// rotation direction
+	var direction = document.getElementById("direction-selection");
+	direction.addEventListener("click", function(){
+		// Getting the selection
+		var p = direction.selectedIndex;
+				// TODO: change rotation direction of last selected node	
+		switch(p){
+			case 0 : 
+				break;
+			
+			case 1 : 
+				break;
+		}  	
+	});  
+	var rotation = document.getElementById("transformation-selection");
+	rotation.addEventListener("click", function(){
+		// Getting the selection
+		var p = rotation.selectedIndex;	
+		// TODO: change global or local matrix of last selected node
+		switch(p){
+			case 0 : 
+				break;
+			case 1 : 
+				break;
+		}  	
+	});  
+	
+
 }
+
+function addModel(model, parent){
+    var x = Math.random()*10-5;
+    var y = Math.random()*2-1; 
+    var z = 0; 
+    var scale = Math.random();
+    model.setTranslationOrigin(x,y,z);
+    model.setScale(factor=scale);
+    model.setRotationXX(0.0,1.0,1);
+    model.setRotationYY(0.0,1.0,-1);
+    model.setRotationZZ(0.0,1.0,1);
+    // model.toggleRotationXX();
+    // model.toggleRotationYY();
+    // model.toggleRotationZZ();
+
+    var n = new GraphNode(model);
+    n.setParent(parent);
+    graphnodes.push(n);
+    // selectLastNode();	
+
+    scenegraph.print("", true);
+}
+
 // not used rn
+/// Deprecated
 function readFile(){
 		
 	var file = this.files[0];
@@ -951,8 +890,8 @@ function runWebGL() {
 
 	shaderProgram = initShaders( gl );
 	
-	setEventListeners();
-	
+	setEventListeners(canvas);
+
 	
 	tick();		// A timer controls the rendering / animation    
 

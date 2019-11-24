@@ -23,7 +23,7 @@ class Model {
                 y: 0,
                 z: 0
             },
-            speed: 1,
+            speed: 0.01,
             direction: 1,
             enabled: false
         }
@@ -77,15 +77,25 @@ class Model {
         this.rotation.ZZ.speed = speed;
         this.rotation.ZZ.dir = dir;
     }
-    toggleRotationXX(){
-        this.rotation.XX.on = !this.rotation.XX.on;
+    toggleRotationXX(state){
+        if(state)
+            this.rotation.XX.on = state;
+        else
+            this.rotation.XX.on = !this.rotation.XX.on;
     }
-    toggleRotationYY(){
-        this.rotation.YY.on = !this.rotation.YY.on;
+    toggleRotationYY(state){
+        if(state)
+            this.rotation.YY.on = state;
+        else
+            this.rotation.YY.on = !this.rotation.YY.on;
     }
-    toggleRotationZZ(){
-        this.rotation.ZZ.on = !this.rotation.ZZ.on;
+    toggleRotationZZ(state){
+        if(state)
+            this.rotation.ZZ.on = state;
+        else
+            this.rotation.ZZ.on = !this.rotation.ZZ.on;
     }
+
 
     setScale(x,y,z) { 
         this.scale.x = x;
@@ -131,7 +141,12 @@ class Model {
             this.rotation.ZZ.angle += this.rotation.ZZ.dir * this.rotation.ZZ.speed * (90 * elapsedTime) / 1000.0;
     }
 
-    toggleTranslationAnimation() { this.translation.enabled = !this.translation.enabled; }
+    toggleTranslationAnimation(state) { 
+        if(state)
+            this.translation.enabled = state;
+        else
+            this.translation.enabled = !this.translation.enabled; 
+        }
     
     translate(elapsedTime){
         var x_dir, y_dir, z_dir;

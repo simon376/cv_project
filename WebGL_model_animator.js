@@ -337,7 +337,7 @@ function drawModel( node,
 					mvMatrix,
 					primitiveType ) {
 
-	var localMatrix = node.model.getMatrix();
+	var localMatrix = node.model.getMatrix(mvMatrix);
 	var matrix = mult( node.globalMatrix, localMatrix ); // not sure if this is the correct order
 	// this should add the global mvMatrix and the local transformations.. should..
 						 
@@ -398,7 +398,7 @@ function drawScene() {
 		
 		// For now, the default orthogonal view volume
 		// change the view volume perspective matrix
-		pMatrix = ortho( -6.0, 6.0, -2.0, 2.0, -1.0, 1.0 );
+		pMatrix = ortho( -6.0, 6.0, -2.0, 2.0, -2.0, 15.0 );
 		
 		// Global transformation !!
 		
@@ -416,7 +416,7 @@ function drawScene() {
 		
 		// Ensure that the model is "inside" the view volume
 		
-		pMatrix = perspective( 45, 1, 0.05, 15 );
+		pMatrix = perspective( 45, 3, 0.05, 15 );
 		
 		// Global transformation !!
 		
@@ -663,46 +663,54 @@ function setEventListeners(){
 		}
 	};
 	
+
 	//	Translation
 	document.getElementById("t_submit").onclick = function(){
 		
-		var o_x = document.getElementById("t_orig_x").value;
-		var o_y = document.getElementById("t_orig_y").value;
-		var o_z = document.getElementById("t_orig_z").value;
-		var d_x = document.getElementById("t_dest_x").value;
-		var d_y = document.getElementById("t_dest_y").value;
-		var d_z = document.getElementById("t_dest_z").value;
+		var o_x = parseFloat(document.getElementById("t_orig_x").value);
+		var o_y = parseFloat(document.getElementById("t_orig_y").value);
+		var o_z = parseFloat(document.getElementById("t_orig_z").value);
+		var d_x = parseFloat(document.getElementById("t_dest_x").value);
+		var d_y = parseFloat(document.getElementById("t_dest_y").value);
+		var d_z = parseFloat(document.getElementById("t_dest_z").value);
 		var logmsg = "translation from: (" + o_x + "|" + o_y + "|" + o_z
 						+ ") to (" + d_x + "|" + d_y + "|" + d_z + ")";
-		console.log(logmsg);
-		var node = graphnodes.pop();
-		node.model.setTranslation(d_x,d_y,d_z);
-		graphnodes.push(node);
+		var selectedNode = getSelected();
+		if(selectedNode){
+			selectedNode.model.setTranslationOrigin(o_x,o_y,o_z);
+			selectedNode.model.setTranslationDestination(d_x,d_y,d_z);
+			selectedNode.model.toggleTranslationAnimation(true);
+		}
 
+		console.log(logmsg);
 	};      
 
 	//	Rotation
 	document.getElementById("r_submit").onclick = function(){		
-		var x_a = document.getElementById("xx_angle").value;
-		var x_s = document.getElementById("xx_speed").value;
-		var x_d = document.getElementById("xx_dir").value;
-		var y_a = document.getElementById("yy_angle").value;
-		var y_s = document.getElementById("yy_speed").value;
-		var y_d = document.getElementById("yy_dir").value;
-		var z_a = document.getElementById("zz_angle").value;
-		var z_s = document.getElementById("zz_speed").value;
-		var z_d = document.getElementById("zz_dir").value;
-		// var logmsg = "rotation in deg: (" + r_x + "|" + r_y + "|" + r_z + ")";
-		// console.log(logmsg);
-		var node = graphnodes.pop();
-		// TODO: fix
-		// node.model.setRotationXX(0,0,0)
-		// node.model.setRotationYY(0,0,0)
-		// node.model.setRotationZZ(0,0,0)
-		node.model.setRotationXX(x_a,x_s,x_d)
-		// node.model.setRotationYY(y_a,y_s,y_d)
-		// node.model.setRotationZZ(z_a,z_s,z_d)
-		graphnodes.push(node);
+		var x_a = parseFloat(document.getElementById("xx_angle").value);
+		var x_s = parseFloat(document.getElementById("xx_speed").value);
+		var x_d = parseFloat(document.getElementById("xx_dir").value);
+		var y_a = parseFloat(document.getElementById("yy_angle").value);
+		var y_s = parseFloat(document.getElementById("yy_speed").value);
+		var y_d = parseFloat(document.getElementById("yy_dir").value);
+		var z_a = parseFloat(document.getElementById("zz_angle").value);
+		var z_s = parseFloat(document.getElementById("zz_speed").value);
+		var z_d = parseFloat(document.getElementById("zz_dir").value);
+		var logmsg = "rotation XX (" + x_a + "|" + x_s + "|" + x_d + ")" + 
+					"YY (" + y_a + "|" + y_s + "|" + y_d + ")" + 
+					"ZZ (" + x_a + "|" + x_s + "|" + x_d + ")";
+
+		var selectedNode = getSelected();
+		if(selectedNode){
+			selectedNode.model.setRotationXX(x_a,x_s,x_d)
+			selectedNode.model.setRotationYY(y_a,y_s,y_d)
+			selectedNode.model.setRotationZZ(z_a,z_s,z_d)
+			selectedNode.model.toggleRotationXX(true);
+			selectedNode.model.toggleRotationYY(true);
+			selectedNode.model.toggleRotationZZ(true);
+		}
+
+		console.log(logmsg);
 	};   
 	
 	// TODO fix rotation
@@ -750,19 +758,19 @@ function addModel(model, parent){
     var y = Math.random()*2-1; 
     var z = 0; 
     var scale = Math.random();
-    model.setTranslation(x,y,z);
+    model.setTranslationOrigin(x,y,z);
     model.setScale(factor=scale);
     model.setRotationXX(0.0,1.0,1);
     model.setRotationYY(0.0,1.0,-1);
     model.setRotationZZ(0.0,1.0,1);
-    model.toggleRotationXX();
-    model.toggleRotationYY();
-    model.toggleRotationZZ();
+    // model.toggleRotationXX();
+    // model.toggleRotationYY();
+    // model.toggleRotationZZ();
 
     var n = new GraphNode(model);
     n.setParent(parent);
     graphnodes.push(n);
-    selectLastNode();	
+    // selectLastNode();	
 
     scenegraph.print("", true);
 }

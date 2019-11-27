@@ -524,7 +524,6 @@ function setEventListeners(){
 	
 		if (keyName === 'ArrowRight') {
 			selectNextNode();
-			// TODO Do stuff
 		}
 		if (keyName === 'ArrowLeft') {
 			selectPreviousNode();
@@ -713,19 +712,6 @@ function setEventListeners(){
 		console.log(logmsg);
 	};   
 	
-
-	var rotation = document.getElementById("transformation-selection");
-	rotation.addEventListener("click", function(){
-		// Getting the selection
-		var p = rotation.selectedIndex;	
-		// TODO: change global or local matrix of last selected node
-		switch(p){
-			case 0 : 
-				break;
-			case 1 : 
-				break;
-		}  	
-	});
 
 	//Scaling
 	document.getElementById("sc_submit").onclick = function () {

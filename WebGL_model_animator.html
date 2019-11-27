@@ -171,18 +171,11 @@ Passing the Model-View Matrix and the Projection Matrix.
 		<form name="rotation" id="rotation" style="display: none">
 			<h2>Rotation</h2>
 			<fieldset style="width: 50%; margin: 0px auto">
-			<select id="transformation-selection">
-					<option value="0">global rotation</option>
-					<option value="1">local rotation</option>
-			</select>
-
-				<fieldset>
-					<legend>Rotate in deg:</legend>
-					XX(angle/speed/dir):	<input type="text" id="xx_angle" value="0"> 	<input type="text" id="xx_speed" value="1.0"> 	<input type="text" id="xx_dir" value="1"><br>
-					YY(angle/speed/dir):	<input type="text" id="yy_angle" value="0"> 	<input type="text" id="yy_speed" value="1.0"> 	<input type="text" id="yy_dir" value="-1"><br>
-					ZZ(angle/speed/dir):	<input type="text" id="zz_angle" value="0"> 	<input type="text" id="zz_speed" value="1.0"> 	<input type="text" id="zz_dir" value="1"><br>
-				</fieldset>
-			  
+				<legend>Rotate in deg:</legend>
+				XX(angle/speed/dir):	<input type="text" id="xx_angle" value="0"> 	<input type="text" id="xx_speed" value="1.0"> 	<input type="text" id="xx_dir" value="1"><br>
+				YY(angle/speed/dir):	<input type="text" id="yy_angle" value="0"> 	<input type="text" id="yy_speed" value="1.0"> 	<input type="text" id="yy_dir" value="-1"><br>
+				ZZ(angle/speed/dir):	<input type="text" id="zz_angle" value="0"> 	<input type="text" id="zz_speed" value="1.0"> 	<input type="text" id="zz_dir" value="1"><br>
+		
 			</fieldset>
 	  
 			<button type="button" id="r_submit">Add Rotation</button>

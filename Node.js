@@ -3,7 +3,6 @@
 class GraphNode {
     constructor(model) {
         this.children = [];
-        // this.localMatrix = mat4();
         this.globalMatrix = mat4();
         if(model)
             this.model = model;
@@ -54,13 +53,11 @@ class GraphNode {
         if (last)
         {
             log += "\\-";
-            // console.log("\\-");
             indent += "  ";
         }
         else
         {
             log += "|-";
-            // console.log("|-");
             indent += "| ";
         }
         if(this.model){
@@ -68,9 +65,6 @@ class GraphNode {
         }
         else
             log += "root";
-        //     console.log(this.model.toString());
-        // else
-        //     console.log("root");
         console.log(log);
 
         for (var i = 0; i < this.children.length; i++)

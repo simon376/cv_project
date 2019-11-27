@@ -1,12 +1,8 @@
-
-
-// TODO: add ModelFactory for easy setup
+// Model contains vertex array and dictionaries for the different transformations (TRS)
 class Model {
 
     constructor() {
-        this.vertices = [];
-        this.normals = []; // TODO: will be added later for illumination computation
-    
+        this.vertices = [];   
         this.translation = {
             origin: {
                 x: 0,
@@ -107,6 +103,7 @@ class Model {
         this.scale.x = this.scale.y = this.scale.z = factor;
     }
     
+    // calculate the latest transformation matrix
     getMatrix(mvMatrix){
         var matrix;
         if(!mvMatrix)
@@ -130,10 +127,6 @@ class Model {
     
     setVertices(array){
         this.vertices = array;
-    }
-
-    scale(elapsedTime){
-        //TODO animate scaling
     }
 
     rotate(elapsedTime){
@@ -248,3 +241,5 @@ class Model {
     toString(){ return "Tetrahedron";} 
 
 }
+
+// Simon

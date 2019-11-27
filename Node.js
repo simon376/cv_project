@@ -1,5 +1,5 @@
-// WebGL Scene Graph Node
-
+// Node to be used for the Scene graph.
+// contains global transformation matrix, model and child nodes
 class GraphNode {
     constructor(model) {
         this.children = [];
@@ -73,6 +73,8 @@ class GraphNode {
 
 }
 
+// General functions related to nodes, used to select nodes from the global graphnodes list
+
 function selectLastNode(){
     if(graphnodes.length > 0){
         if(selectedIndex >= 0)
@@ -125,6 +127,9 @@ var graphnodes = [];
 var selectedIndex = -1;
 var scenegraph = new GraphNode();
 
+
+// -- Two examples down here, comment out only one of them at a time
+
 // --       Rotation Test   "Solar System"
 
 var sunNode = new GraphNode(new Cube());
@@ -175,3 +180,7 @@ graphnodes.push(moonOrbitNode);
 // transTest.model.toggleRotationXX();
 // transTest.setParent(scenegraph);
 // graphnodes.push(transTest);
+
+
+
+// Simon

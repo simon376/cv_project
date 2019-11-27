@@ -26,63 +26,8 @@ var triangleVertexColorBuffer = null;
 
 // The GLOBAL transformation parameters
 
-var globalAngleYY = 0.0;
-
 var globalTz = 0.0;
 
-// The local transformation parameters
-
-// The translation vector
-
-var tx = 0.0;
-
-var ty = 0.0;
-
-var tz = 0.0;
-
-// The rotation angles in degrees
-
-var angleXX = 0.0;
-
-var angleYY = 0.0;
-
-var angleZZ = 0.0;
-
-// The scaling factors
-
-var sx = 0.5;
-
-var sy = 0.5;
-
-var sz = 0.5;
-
-// GLOBAL Animation controls
-
-var globalRotationYY_ON = 1;
-
-var globalRotationYY_DIR = 1;
-
-var globalRotationYY_SPEED = 1;
-
-// Local Animation controls
-
-var rotationXX_ON = 1;
-
-var rotationXX_DIR = 1;
-
-var rotationXX_SPEED = 1;
- 
-var rotationYY_ON = 1;
-
-var rotationYY_DIR = 1;
-
-var rotationYY_SPEED = 1;
- 
-var rotationZZ_ON = 1;
-
-var rotationZZ_DIR = 1;
-
-var rotationZZ_SPEED = 1;
  
 // To allow choosing the way of drawing the model triangles
 
@@ -92,102 +37,7 @@ var primitiveType = null;
 
 var projectionType = 0;
  
-// For storing the vertices defining the triangles
-
-var vertices = [
-
-		// FRONT FACE
-		 
-		-0.25, -0.25,  0.25,
-		 
-		 0.25, -0.25,  0.25,
-		 
-		 0.25,  0.25,  0.25,
-
-		 
-		 0.25,  0.25,  0.25,
-		 
-		-0.25,  0.25,  0.25,
-		 
-		-0.25, -0.25,  0.25,
-		
-		// TOP FACE
-		
-		-0.25,  0.25,  0.25,
-		 
-		 0.25,  0.25,  0.25,
-		 
-		 0.25,  0.25, -0.25,
-
-		 
-		 0.25,  0.25, -0.25,
-		 
-		-0.25,  0.25, -0.25,
-		 
-		-0.25,  0.25,  0.25,
-		
-		// BOTTOM FACE 
-		
-		-0.25, -0.25, -0.25,
-		 
-		 0.25, -0.25, -0.25,
-		 
-		 0.25, -0.25,  0.25,
-
-		 
-		 0.25, -0.25,  0.25,
-		 
-		-0.25, -0.25,  0.25,
-		 
-		-0.25, -0.25, -0.25,
-		
-		// LEFT FACE 
-		
-		-0.25,  0.25,  0.25,
-		 
-		-0.25, -0.25, -0.25,
-
-		-0.25, -0.25,  0.25,
-		 
-		 
-		-0.25,  0.25,  0.25,
-		 
-		-0.25,  0.25, -0.25,
-		 
-		-0.25, -0.25, -0.25,
-		
-		// RIGHT FACE 
-		
-		 0.25,  0.25, -0.25,
-		 
-		 0.25, -0.25,  0.25,
-
-		 0.25, -0.25, -0.25,
-		 
-		 
-		 0.25,  0.25, -0.25,
-		 
-		 0.25,  0.25,  0.25,
-		 
-		 0.25, -0.25,  0.25,
-		
-		// BACK FACE 
-		
-		-0.25,  0.25, -0.25,
-		 
-		 0.25, -0.25, -0.25,
-
-		-0.25, -0.25, -0.25,
-		 
-		 
-		-0.25,  0.25, -0.25,
-		 
-		 0.25,  0.25, -0.25,
-		 
-		 0.25, -0.25, -0.25,			 
-];
-
-// And their colour
+// storing their colours
 
 var colors = [
 
@@ -283,7 +133,6 @@ var colors = [
 		 0.50,  0.35,  0.35,			 			 
 ];
 
-var models = [];
 
 //----------------------------------------------------------------------------
 //
@@ -338,9 +187,8 @@ function drawModel( node,
 					primitiveType ) {
 
 	var localMatrix = node.model.getMatrix(mvMatrix);
-	var matrix = mult( node.globalMatrix, localMatrix ); // not sure if this is the correct order
-	// this should add the global mvMatrix and the local transformations.. should..
-						 
+	var matrix = mult( node.globalMatrix, localMatrix ); 
+							 
 	// Passing the Model View Matrix to apply the current transformation
 	
 	var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
@@ -402,11 +250,7 @@ function drawScene() {
 		
 		// Global transformation !!
 		
-		globalTz = 0;
-		
-		// TO BE DONE !
-		
-		// Allow the user to control the size of the view volume
+		globalTz = 0;		
 	}
 	else {	
 
@@ -421,10 +265,6 @@ function drawScene() {
 		// Global transformation !!
 		
 		globalTz = -2.5;
-
-		// TO BE DONE !
-		
-		// Allow the user to control the size of the view volume
 	}
 	
 	// Passing the Projection Matrix to apply the current projection
@@ -440,7 +280,7 @@ function drawScene() {
 	// here, update the whole scenegraph and apply global transformation matrixes
 	scenegraph.updateGlobalMatrix(mvMatrix);	
 
-	// use graphnodes-array to make sure everything gets drawn
+	// use graphnodes-array to draw everything
 	graphnodes.forEach(node => {
 		if(node.isSelected)
 			drawModel(node,mvMatrix, gl.LINE_LOOP);
@@ -467,15 +307,8 @@ function animate() {
 		
 		var elapsed = timeNow - lastTime;
 		
-		// Global rotation
-
-		if( globalRotationYY_ON ) {
-
-			globalAngleYY += globalRotationYY_DIR * globalRotationYY_SPEED * (90 * elapsed) / 1000.0;
-	    }
 
 		// update local transformations 
-		// TODO:  Scaling
 		graphnodes.forEach(node => {
 			node.model.rotate(elapsed);
 			node.model.translate(elapsed);
@@ -517,7 +350,7 @@ function outputInfos(){
 
 function setEventListeners(){
 	
-	// arrow up / down to select node
+	// arrow left / right to select node
 
 	document.addEventListener('keydown',  (event) => {
 		const keyName = event.key;
@@ -595,48 +428,6 @@ function setEventListeners(){
 			addModel(new Tetrahedron(), scenegraph);
 	};
 
-	
-
-	document.getElementById("reset-button").onclick = function(){
-		
-		// The initial values
-
-		tx = 0.0;
-
-		ty = 0.0;
-
-		tz = 0.0;
-
-		angleXX = 0.0;
-
-		angleYY = 0.0;
-
-		angleZZ = 0.0;
-
-		sx = 0.5;
-
-		sy = 0.5;
-
-		sz = 0.5;
-		
-		rotationXX_ON = 0;
-		
-		rotationXX_DIR = 1;
-		
-		rotationXX_SPEED = 1;
-
-		rotationYY_ON = 0;
-		
-		rotationYY_DIR = 1;
-		
-		rotationYY_SPEED = 1;
-
-		rotationZZ_ON = 0;
-		
-		rotationZZ_DIR = 1;
-		
-		rotationZZ_SPEED = 1;
-	};      
 
 	document.getElementById("face-culling-button").onclick = function(){
 		
@@ -716,8 +507,6 @@ function setEventListeners(){
 	//Scaling
 	document.getElementById("sc_submit").onclick = function () {
 		var factor = parseFloat(document.getElementById("scaling").value);
-		var speed = parseFloat(document.getElementById("s_speed").value);	//TODO: use for animation
-
 		var selectedNode = getSelected();
 		if(selectedNode){
 			selectedNode.model.setScale(factor);
@@ -736,94 +525,14 @@ function addModel(model, parent){
     var scale = Math.random();
     model.setTranslationOrigin(x,y,z);
     model.setScale(factor=scale);
-    model.setRotationXX(0.0,1.0,1);
-    model.setRotationYY(0.0,1.0,-1);
-    model.setRotationZZ(0.0,1.0,1);
-    // model.toggleRotationXX();
-    // model.toggleRotationYY();
-    // model.toggleRotationZZ();
 
     var n = new GraphNode(model);
     n.setParent(parent);
     graphnodes.push(n);
-    // selectLastNode();	
 
     scenegraph.print("", true);
 }
 
-// not used rn
-/// Deprecated
-function readFile(){
-		
-	var file = this.files[0];
-	
-	var reader = new FileReader();
-	
-	reader.onload = function( progressEvent ){
-		
-		// Entire file read as a string
-		
-		// The tokens/values in the file
-
-		// Separation between values is 1 or mode whitespaces
-
-		var tokens = this.result.split(/\s\s*/);
-
-		// Array of values; each value is a string
-		
-		var numVertices = parseInt( tokens[0] );
-		
-		// For every vertex we have 6 floating point values
-		
-		var i, j;
-		
-		var aux = 1;
-		
-		var newVertices = [];
-		
-		var newColors = []
-		
-		for( i = 0; i < numVertices; i++ ) {
-		
-			for( j = 0; j < 3; j++ ) {
-				
-				newVertices[ 3 * i + j ] = parseFloat( tokens[ aux++ ] );
-			}
-			
-			for( j = 0; j < 3; j++ ) {
-				
-				newColors[ 3 * i + j ] = parseFloat( tokens[ aux++ ] );
-			}
-		}
-				
-		// Assigning to the current model
-		// TODO: append instead of replace
-		
-		// vertices.push(newVertices);
-		// colors.push(newColors);
-		// vertices.concat(newVertices.slice());
-		// colors.concat(newColors.slice());
-		vertices = newVertices.slice();
-		
-		colors = newColors.slice();
-		
-		// Rendering the model just read
-	
-		initBuffers();
-
-		// RESET the transformations - NEED AUXILIARY FUNCTION !!
-		
-		tx = ty = tz = 0.0;
-					
-		angleXX = angleYY = angleZZ = 0.0;
-		
-		sx = sy = sz = 0.5;
-	};
-	
-	// Entire file read as a string
-		
-	reader.readAsText( file );		
-}
 //----------------------------------------------------------------------------
 //
 // WebGL Initialization

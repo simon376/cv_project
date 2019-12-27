@@ -1,5 +1,5 @@
 # 3D Scene Animator
-Group Project for Visual Computing @ UA
+Group Project for Visual Computing @ Universidade de Aveiro
 
  The application allows the visualization of various 3D objects,
  which can be inserted in the desired place inside a SceneGraph.

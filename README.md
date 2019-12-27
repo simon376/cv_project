@@ -7,3 +7,6 @@ Group Project for Visual Computing @ UA
  The application allows you to configure their position and orientation over time, 
  as well as the duration of each movement, 
  in order to generate an animation - for example, of a simplified planetary system.
+
+
+select model using left & right keyboard arrows

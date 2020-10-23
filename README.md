@@ -10,3 +10,5 @@ Group Project for Visual Computing @ Universidade de Aveiro
 
 
 select model using left & right keyboard arrows
+
+[click here](https://simon376.github.io/cv_project/) to try it out!
